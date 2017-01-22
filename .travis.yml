@@ -18,7 +18,7 @@ script:
 
 deploy:
   on:
-    repo: openenergymonitor/emonTxFirmware
+    repo: openenergymonitor/emontx3
     all_branches: true
     condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$
   skip_cleanup: true
