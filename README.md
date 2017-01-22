@@ -1,6 +1,8 @@
 ## Hardware & Firmware for emonTx V3.4.x
 
 
+[![Build Status](https://travis-ci.org/openenergymonitor/emontx3.svg?branch=master)](https://travis-ci.org/openenergymonitor/emontx3)
+
 Part of the [OpenEnergyMonitor.org](https://openenergymonitor.org) project
 
 - [Purchase emonTx V3](https://shop.openenergymonitor.com/emonth-433mhz-temperature-humidity-node/)
