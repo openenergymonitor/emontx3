@@ -16,6 +16,8 @@
 * [Serial RF nodeID config](https://community.openenergymonitor.org/t/emontx-v3-configure-rf-settings-via-serial-released-fw-v2-6-0/2064)
 *
 
+[**Change Log**](https://github.com/openenergymonitor/emontx3/blob/master/firmware/changelog.md)
+
 ***
 
 # Compile & Upload
