@@ -66,7 +66,7 @@ See: https://github.com/openenergymonitor/emonhub/blob/emon-pi/configuration.md
 */
 
 #define emonTxV3                                                                          // Tell emonLib this is the emonTx V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonTx V3 eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
-#define RF69_COMPAT 0                                                              // Set to 1 if using RFM69CW or 0 is using RFM12B
+#define RF69_COMPAT 1                                                              // Set to 1 if using RFM69CW or 0 is using RFM12B
 #include <JeeLib.h>                                                                      //https://github.com/jcw/jeelib - Tested with JeeLib 3/11/14
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption
 
@@ -114,8 +114,8 @@ const byte MaxOnewire=             6;
 //----------------------------emonTx V3 hard-wired connections---------------------------------------------------------------------------------------------------------------
 const byte LEDpin=                 6;                              // emonTx V3 LED
 const byte DS18B20_PWR=            19;                             // DS18B20 Power
-const byte DIP_switch1=            8;                              // Voltage selection 230 / 110 V AC (default switch off 230V)  - switch off D8 is HIGH from internal pullup
-const byte DIP_switch2=            9;                              // RF node ID (default no chance in node ID, switch on for nodeID -1) switch off D9 is HIGH from internal pullup
+const byte DIP_switch1=            8;                              // RF node ID (default no chance in node ID, switch on for nodeID -1) switch off D9 is HIGH from internal pullup
+const byte DIP_switch2=            9;                              // Voltage selection 230 / 110 V AC (default switch off 230V)  - switch off D8 is HIGH from internal pullup
 const byte battery_voltage_pin=    7;                              // Battery Voltage sample from 3 x AA
 const byte pulse_countINT=         1;                              // INT 1 / Dig 3 Terminal Block / RJ45 Pulse counting pin(emonTx V3.4) - (INT0 / Dig2 emonTx V3.2)
 const byte pulse_count_pin=        3;                              // INT 1 / Dig 3 Terminal Block / RJ45 Pulse counting pin(emonTx V3.4) - (INT0 / Dig2 emonTx V3.2)
