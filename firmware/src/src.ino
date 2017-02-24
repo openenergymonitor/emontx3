@@ -77,7 +77,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 26;         // firmware version divided by 10 e,g 16 = V1.6
+const byte version = 27;         // firmware version divided by 10 e,g 16 = V1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
