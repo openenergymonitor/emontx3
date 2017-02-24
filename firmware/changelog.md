@@ -1,5 +1,7 @@
 ## emonTx V3.4 firmware change log:
 
+
+- v2.7   34/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config incorrect serial print if node ID has been set via EEPROM serial config and DIP switch.
 - v2.6   31/10/16 Add RF config via serial & save to EEPROM feature. Allows RF setings (nodeID, freq, group) via serial
 - v2.5   19/09/16 Increase baud 9600 > 115200 to emonesp compatiability
 - v2.4   06/09/16 Update serial output to use CSV string pairs to work with emonESP e.g. 'ct1:100,ct2:329'
