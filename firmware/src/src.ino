@@ -31,6 +31,7 @@
 
 
 Change Log:
+v2.7   34/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present).
 v2.6   31/10/16 Add RF config via serial & save to EEPROM feature. Allows RF setings (nodeID, freq, group) via serial
 v2.5   19/09/16 Increase baud 9600 > 115200 to emonesp compatiability
 v2.4   06/09/16 Update serial output to use CSV string pairs to work with emonESP e.g. 'ct1:100,ct2:329'
@@ -80,7 +81,8 @@ const byte version = 26;         // firmware version divided by 10 e,g 16 = V1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
-const byte Vrms=                  230;                               // Vrms for apparent power readings (when no AC-AC voltage sample is present)
+byte Vrms=                        230;            // Vrms for apparent power readings (when no AC-AC voltage sample is present)
+const byte Vrms_USA=              110;            // VRMS for USA apparent power
 const byte TIME_BETWEEN_READINGS = 10;            //Time between readings
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
@@ -213,6 +215,7 @@ void setup()
 
   if (USA==TRUE){                                                         // if USA mode is true
     Vcal=Vcal_USA;                                                        // Assume USA AC/AC adatper is being used, set calibration accordingly
+    Vrms = Vrms_USA;                                                      /// USE 110V for USA apparent power
   }
 
   delay(10);
