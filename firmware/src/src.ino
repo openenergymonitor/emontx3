@@ -31,7 +31,8 @@
 
 
 Change Log:
-v2.7   34/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config serial print if node ID has been set via serial config
+v2.8   27/02/17 Correct USA voltage to 120V
+v2.7   24/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config serial print if node ID has been set via serial config
 v2.6   31/10/16 Add RF config via serial & save to EEPROM feature. Allows RF setings (nodeID, freq, group) via serial
 v2.5   19/09/16 Increase baud 9600 > 115200 to emonesp compatiability
 v2.4   06/09/16 Update serial output to use CSV string pairs to work with emonESP e.g. 'ct1:100,ct2:329'
@@ -77,12 +78,12 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 27;         // firmware version divided by 10 e,g 16 = V1.6
+const byte version = 28;         // firmware version divided by 10 e,g 16 = V1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
 byte Vrms=                        230;            // Vrms for apparent power readings (when no AC-AC voltage sample is present)
-const byte Vrms_USA=              110;            // VRMS for USA apparent power
+const byte Vrms_USA=              120;            // VRMS for USA apparent power
 const byte TIME_BETWEEN_READINGS = 10;            //Time between readings
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
