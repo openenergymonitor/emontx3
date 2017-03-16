@@ -1,7 +1,7 @@
 /*
 
   emonTxV3.4 Discrete Sampling
-
+  
   If AC-AC adapter is detected assume emonTx is also powered from adapter (jumper shorted) and take Real Power Readings and disable sleep mode to keep load on power supply constant
   If AC-AC addapter is not detected assume powering from battereis / USB 5V AC sample is not present so take Apparent Power Readings and enable sleep mode
 
@@ -93,7 +93,8 @@ const float Ical2=                90.9;                                 // (2000
 const float Ical3=                90.9;                                 // (2000 turns / 22 Ohm burden) = 90.9
 const float Ical4=                16.67;                               // (2000 turns / 120 Ohm burden) = 16.67
 
-float Vcal=                       268.97;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09
+float Vcal=                       276.0;                             // OD
+//float Vcal=                       268.97;                             // (230V x 13) / (9V x 1.2) = 276.9 Calibration for UK AC-AC adapter 77DB-06-09
 //float Vcal=276.9;
 //const float Vcal=               260;                             //  Calibration for EU AC-AC adapter 77DE-06-09
 const float Vcal_USA=             130.0;                             //Calibration for US AC-AC adapter 77DA-10-09
@@ -114,7 +115,8 @@ const byte MaxOnewire=             6;
 
 //----------------------------emonTx V3 hard-wired connections---------------------------------------------------------------------------------------------------------------
 const byte LEDpin=                 6;                              // emonTx V3 LED
-const byte DS18B20_PWR=            19;                             // DS18B20 Power
+//const byte DS18B20_PWR=            19;                             // DS18B20 Power
+const byte RTSpin=                 19;                             // RTS for RS485
 const byte DIP_switch1=            8;                              // RF node ID (default no chance in node ID, switch on for nodeID -1) switch off D9 is HIGH from internal pullup
 const byte DIP_switch2=            9;                              // Voltage selection 230 / 110 V AC (default switch off 230V)  - switch off D8 is HIGH from internal pullup
 const byte battery_voltage_pin=    7;                              // Battery Voltage sample from 3 x AA
@@ -176,12 +178,14 @@ const char helpText1[] PROGMEM =                                 // Available Se
 void setup()
 {
   pinMode(LEDpin, OUTPUT);
-  pinMode(DS18B20_PWR, OUTPUT);
+//  pinMode(DS18B20_PWR, OUTPUT);
+  pinMode(RTSpin, OUTPUT);
 
   pinMode(pulse_count_pin, INPUT_PULLUP);                     // Set emonTx V3.4 interrupt pulse counting pin as input (Dig 3 / INT1)
   emontx.pulseCount=0;                                        // Make sure pulse count starts at zero
 
   digitalWrite(LEDpin,HIGH);
+  digitalWrite(RTSpin,HIGH);
 
   //DIP SWITCHES
   pinMode(DIP_switch1, INPUT_PULLUP);
@@ -207,11 +211,12 @@ void setup()
     Serial.print(" Group: "); Serial.println(networkGroup);
     Serial.println(" ");
   }
+  delay(20);
+  digitalWrite(RTSpin,LOW);
+  delay(20);
   Serial.println("POST.....wait 10s");
   Serial.println("'+++' then [Enter] for RF config mode");
   
-
-
   if (digitalRead(DIP_switch2)==LOW) USA=TRUE;                            // IF DIP switch 2 is switched on then activate USA mode
 
 
@@ -286,7 +291,8 @@ void setup()
   //################################################################################################################################
   //Setup and for presence of DS18B20
   //################################################################################################################################
-  digitalWrite(DS18B20_PWR, HIGH); delay(100);
+  //digitalWrite(DS18B20_PWR, HIGH); delay(100);
+  digitalWrite(RTSpin, HIGH); delay(100);
   sensors.begin();
   sensors.setWaitForConversion(false);             // disable automatic temperature conversion to reduce time spent awake, conversion will be implemented manually in sleeping
                                                    // http://harizanov.com/2013/07/optimizing-ds18b20-code-for-low-power-applications/
@@ -298,7 +304,8 @@ void setup()
   while ((j < numSensors) && (oneWire.search(allAddress[j])))  j++;
 
   delay(500);
-  digitalWrite(DS18B20_PWR, LOW);
+  //digitalWrite(DS18B20_PWR, LOW);
+  digitalWrite(RTSpin, LOW);
 
   if (numSensors==0) DS18B20_STATUS=0;
     else DS18B20_STATUS=1;
@@ -436,9 +443,10 @@ void loop()
     emontx.Vrms= battery_voltage;
   }
 
+  digitalWrite(RTSpin, HIGH); delay(100); //RTS for RS485
   if (DS18B20_STATUS==1)
   {
-    digitalWrite(DS18B20_PWR, HIGH);
+//    digitalWrite(DS18B20_PWR, HIGH);
     Sleepy::loseSomeTime(50);
     for(int j=0;j<numSensors;j++)
       sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);                    // and set the a to d conversion resolution of each.
@@ -446,7 +454,7 @@ void loop()
     Sleepy::loseSomeTime(ASYNC_DELAY);                                                // Must wait for conversion, since we use ASYNC mode
     for(byte j=0;j<numSensors;j++)
       emontx.temp[j]=get_temperature(j);
-    digitalWrite(DS18B20_PWR, LOW);
+//    digitalWrite(DS18B20_PWR, LOW);
   }
 
   if (pulseCount)                                                                     // if the ISR has counted some pulses, update the total count
@@ -471,8 +479,9 @@ void loop()
       }
     }
     Serial.println();
-    delay(50);
   }
+  delay(20);
+  digitalWrite(RTSpin, LOW);
 
   if (ACAC) {digitalWrite(LEDpin, HIGH); delay(200); digitalWrite(LEDpin, LOW);}    // flash LED if powered by AC
 
