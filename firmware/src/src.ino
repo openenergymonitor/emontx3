@@ -31,6 +31,7 @@
 
 
 Change Log:
+v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
 v2.8   27/02/17 Correct USA voltage to 120V
 v2.7   24/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config serial print if node ID has been set via serial config
 v2.6   31/10/16 Add RF config via serial & save to EEPROM feature. Allows RF setings (nodeID, freq, group) via serial
@@ -78,7 +79,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 28;         // firmware version divided by 10 e,g 16 = V1.6
+const byte version = 29;         // firmware version divided by 10 e,g 16 = V1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
