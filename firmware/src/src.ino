@@ -264,8 +264,7 @@ void setup()
   digitalWrite(LEDpin,LOW);
 
   // Calculate if there is an ACAC adapter on analog input 0
-  //double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
-  double vrms = calc_rms(0,1780) * 0.87;
+  double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
   if (vrms>90) ACAC = 1; else ACAC=0;
 
   if (ACAC)
