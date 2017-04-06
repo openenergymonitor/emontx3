@@ -5,9 +5,7 @@ Update your emonTx V3.4 to latest firmware using Raspberry Pi.
 See change log in emonTx code for version info:
 https://github.com/openenergymonitor/emonTxFirmware/blob/master/emonTxV3/RFM/emonTxV3.4/emonTxV3_4_DiscreteSampling/emonTxV3_4_DiscreteSampling.ino
 
-Plug USB to UART adatper into Raspberry Pi and emonTx: http://shop.openenergymonitor.com/programmer-usb-to-serial-uart/
-
-![programmer_emontx](http://openenergymonitor.org/emon/sites/default/files/emontxv3_USBtoUART.jpg)
+Plug [USB to UART adapter](http://shop.openenergymonitor.com/programmer-usb-to-serial-uart/) into Raspberry Pi and emonTx.
 
 Update script assumes USB to UART programmer is linked to /dev/ttyUSB0, you can check this by running dmesg after plugging in programmer. Adjust script if different tty is used. 
 
