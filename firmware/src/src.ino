@@ -82,10 +82,16 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 const byte version = 29;         // firmware version divided by 10 e,g 16 = V1.6
 boolean DEBUG = 1;                       // Print serial debug
 
+// These variables control the transmit timing of the emonTX
+const unsigned long WDT_PERIOD = 80;                                  // mseconds.
+const unsigned long WDT_MAX_NUMBER = 100;                             // Data sent after WDT_MAX_NUMBER periods of WDT_PERIOD ms without pulses:
+                                                                      // 100s 80 = 8.0 seconds
+const  unsigned long PULSE_MAX_NUMBER = 100;                          // Data sent after PULSE_MAX_NUMBER pulses
+const  unsigned long PULSE_MAX_DURATION = 50;
+
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
 byte Vrms=                        230;            // Vrms for apparent power readings (when no AC-AC voltage sample is present)
 const byte Vrms_USA=              120;            // VRMS for USA apparent power
-const byte TIME_BETWEEN_READINGS = 10;            //Time between readings
 
 //http://openenergymonitor.org/emon/buildingblocks/calibration
 
@@ -154,6 +160,8 @@ PayloadTX emontx;
 boolean CT1, CT2, CT3, CT4, ACAC, DS18B20_STATUS;
 byte CT_count=0;
 volatile byte pulseCount = 0;
+unsigned long WDT_number;
+boolean  p;
 unsigned long pulsetime=0;                                    // Record time of interrupt pulse
 unsigned long start=0;
 
@@ -369,6 +377,10 @@ void setup()
     if (CT4) ct4.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
   }
 
+  emontx.pulseCount = 0;
+  pulseCount = 0;
+  WDT_number=80;
+  p = 0;
   attachInterrupt(pulse_countINT, onPulse, FALLING);     // Attach pulse counting interrupt pulse counting
 
   for(byte j=0;j<MaxOnewire;j++)
@@ -383,112 +395,112 @@ void setup()
 //-------------------------------------------------------------------------------------------------------------------------------------------
 void loop()
 {
-  start = millis();
 
-  if (ACAC) {
-    delay(200);                         //if powering from AC-AC allow time for power supply to settle
-    emontx.Vrms=0;                      //Set Vrms to zero, this will be overwirtten by CT 1-4
+  if (p) {
+    Sleepy::loseSomeTime(PULSE_MAX_DURATION);
+    p=0;
+  }
+  
+  if (Sleepy::loseSomeTime(WDT_PERIOD)==1) {
+    WDT_number++;
   }
 
-  // emontx.power1 = 1;
-  // emontx.power2 = 1;
-  // emontx.power3 = 1;
-  // emontx.power4 = 1;
-
-  if (CT1) {
-    if (ACAC) {
-      ct1.calcVI(no_of_half_wavelengths,timeout); emontx.power1=ct1.realPower;
-      emontx.Vrms=ct1.Vrms*100;
-    } else {
-      emontx.power1 = ct1.calcIrms(no_of_samples)*Vrms;
-    }
-  }
-
-  if (CT2) {
-    if (ACAC) {
-      ct2.calcVI(no_of_half_wavelengths,timeout); emontx.power2=ct2.realPower;
-      emontx.Vrms=ct2.Vrms*100;
-    } else {
-      emontx.power2 = ct2.calcIrms(no_of_samples)*Vrms;
-    }
-  }
-
-  if (CT3) {
-    if (ACAC) {
-      ct3.calcVI(no_of_half_wavelengths,timeout); emontx.power3=ct3.realPower;
-      emontx.Vrms=ct3.Vrms*100;
-    } else {
-      emontx.power3 = ct3.calcIrms(no_of_samples)*Vrms;
-    }
-  }
-
-  if (CT4) {
-    if (ACAC) {
-      ct4.calcVI(no_of_half_wavelengths,timeout); emontx.power4=ct4.realPower;
-      emontx.Vrms=ct4.Vrms*100;
-    } else {
-      emontx.power4 = ct4.calcIrms(no_of_samples)*Vrms;
-    }
-  }
-
-  if (!ACAC){                                                                         // read battery voltage if powered by DC
-    int battery_voltage=analogRead(battery_voltage_pin) * 0.681322727;                // 6.6V battery = 3.3V input = 1024 ADC
-    emontx.Vrms= battery_voltage;
-  }
-
-  if (DS18B20_STATUS==1)
+  if (WDT_number>=WDT_MAX_NUMBER || pulseCount>=PULSE_MAX_NUMBER)
   {
-    digitalWrite(DS18B20_PWR, HIGH);
-    Sleepy::loseSomeTime(50);
-    for(int j=0;j<numSensors;j++)
-      sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);                    // and set the a to d conversion resolution of each.
-    sensors.requestTemperatures();
-    Sleepy::loseSomeTime(ASYNC_DELAY);                                                // Must wait for conversion, since we use ASYNC mode
-    for(byte j=0;j<numSensors;j++)
-      emontx.temp[j]=get_temperature(j);
-    digitalWrite(DS18B20_PWR, LOW);
-  }
-
-  if (pulseCount)                                                                     // if the ISR has counted some pulses, update the total count
-  {
-    cli();                                                                            // Disable interrupt just in case pulse comes in while we are updating the count
-    emontx.pulseCount += pulseCount;
+    cli();
+    emontx.pulseCount += (unsigned int) pulseCount;
     pulseCount = 0;
-    sei();                                                                            // Re-enable interrupts
-  }
+    sei();
 
-  if (DEBUG==1) {
-    Serial.print("ct1:"); Serial.print(emontx.power1);
-    Serial.print(",ct2:"); Serial.print(emontx.power2);
-    Serial.print(",ct3:"); Serial.print(emontx.power3);
-    Serial.print(",ct4:"); Serial.print(emontx.power4);
-    Serial.print(",vrms:"); Serial.print(emontx.Vrms);
-    Serial.print(",pulse:"); Serial.print(emontx.pulseCount);
-    if (DS18B20_STATUS==1){
-      for(byte j=0;j<numSensors;j++){
-        Serial.print(",t"); Serial.print(j); Serial.print(":");
-        Serial.print(emontx.temp[j]);
+    if (ACAC) {
+      delay(200);                         //if powering from AC-AC allow time for power supply to settle
+      emontx.Vrms=0;                      //Set Vrms to zero, this will be overwirtten by CT 1-4
+    }
+
+    // emontx.power1 = 1;
+    // emontx.power2 = 1;
+    // emontx.power3 = 1;
+    // emontx.power4 = 1;
+
+    if (CT1) {
+      if (ACAC) {
+        ct1.calcVI(no_of_half_wavelengths,timeout); emontx.power1=ct1.realPower;
+        emontx.Vrms=ct1.Vrms*100;
+      } else {
+        emontx.power1 = ct1.calcIrms(no_of_samples)*Vrms;
       }
     }
-    Serial.println();
-    delay(50);
-  }
 
-  if (ACAC) {digitalWrite(LEDpin, HIGH); delay(200); digitalWrite(LEDpin, LOW);}    // flash LED if powered by AC
+    if (CT2) {
+      if (ACAC) {
+        ct2.calcVI(no_of_half_wavelengths,timeout); emontx.power2=ct2.realPower;
+        emontx.Vrms=ct2.Vrms*100;
+      } else {
+        emontx.power2 = ct2.calcIrms(no_of_samples)*Vrms;
+      }
+    }
 
-  if (RF_STATUS==1){
-    send_rf_data();                                                           // *SEND RF DATA* - see emontx_lib
-  }
+    if (CT3) {
+      if (ACAC) {
+        ct3.calcVI(no_of_half_wavelengths,timeout); emontx.power3=ct3.realPower;
+        emontx.Vrms=ct3.Vrms*100;
+      } else {
+        emontx.power3 = ct3.calcIrms(no_of_samples)*Vrms;
+      }
+    }
 
-  unsigned long runtime = millis() - start;
-  unsigned long sleeptime = (TIME_BETWEEN_READINGS*1000) - runtime - 100;
+    if (CT4) {
+      if (ACAC) {
+        ct4.calcVI(no_of_half_wavelengths,timeout); emontx.power4=ct4.realPower;
+        emontx.Vrms=ct4.Vrms*100;
+      } else {
+        emontx.power4 = ct4.calcIrms(no_of_samples)*Vrms;
+      }
+    }
 
-  if (ACAC) {                                                               // If powered by AC-AC adaper (mains power) then delay instead of sleep
-    delay(sleeptime);
-  } else {                                                                  // if powered by battery then sleep rather than dealy and disable LED to lower energy consumption
-                                   // lose an additional 500ms here (measured timing)
-    Sleepy::loseSomeTime(sleeptime-500);                                    // sleep or delay in seconds
-  }
+    if (!ACAC){                                                                         // read battery voltage if powered by DC
+      int battery_voltage=analogRead(battery_voltage_pin) * 0.681322727;                // 6.6V battery = 3.3V input = 1024 ADC
+      emontx.Vrms= battery_voltage;
+    }
+
+    if (DS18B20_STATUS==1)
+    {
+      digitalWrite(DS18B20_PWR, HIGH);
+      Sleepy::loseSomeTime(50);
+      for(int j=0;j<numSensors;j++)
+        sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);                    // and set the a to d conversion resolution of each.
+      sensors.requestTemperatures();
+      Sleepy::loseSomeTime(ASYNC_DELAY);                                                // Must wait for conversion, since we use ASYNC mode
+      for(byte j=0;j<numSensors;j++)
+        emontx.temp[j]=get_temperature(j);
+      digitalWrite(DS18B20_PWR, LOW);
+    }
+
+    if (DEBUG==1) {
+      Serial.print("ct1:"); Serial.print(emontx.power1);
+      Serial.print(",ct2:"); Serial.print(emontx.power2);
+      Serial.print(",ct3:"); Serial.print(emontx.power3);
+      Serial.print(",ct4:"); Serial.print(emontx.power4);
+      Serial.print(",vrms:"); Serial.print(emontx.Vrms);
+      Serial.print(",pulse:"); Serial.print(emontx.pulseCount);
+      if (DS18B20_STATUS==1){
+        for(byte j=0;j<numSensors;j++){
+          Serial.print(",t"); Serial.print(j); Serial.print(":");
+          Serial.print(emontx.temp[j]);
+        }
+      }
+      Serial.println();
+      delay(50);
+    }
+
+    if (ACAC) {digitalWrite(LEDpin, HIGH); delay(200); digitalWrite(LEDpin, LOW);}    // flash LED if powered by AC
+
+    if (RF_STATUS==1){
+      send_rf_data();                                                           // *SEND RF DATA* - see emontx_lib
+    }
+
+    WDT_number=0;
+  } // end WDT
 } // end loop
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -529,12 +541,20 @@ double calc_rms(int pin, int samples)
 //-------------------------------------------------------------------------------------------------------------------------------------------
 // The interrupt routine - runs each time a falling edge of a pulse is detected
 //-------------------------------------------------------------------------------------------------------------------------------------------
+/*
 void onPulse()
 {
   if ( (millis() - pulsetime) > min_pulsewidth) {
     pulseCount++;					//calculate wh elapsed from time between pulses
   }
   pulsetime=millis();
+}*/
+
+// The interrupt routine - runs each time a rising edge of a pulse is detected
+void onPulse()
+{
+  p=1;                                       // flag for new pulse set to true
+  pulseCount++;                              // number of pulses since the last RF sent
 }
 
 int get_temperature(byte sensor)
