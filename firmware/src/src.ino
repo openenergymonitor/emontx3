@@ -31,6 +31,7 @@
 
 
 Change Log:
+V3.0   08/05/17 Use of different timing mechamism to support battery powered pulse counting
 v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
 v2.8   27/02/17 Correct USA voltage to 120V
 v2.7   24/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config serial print if node ID has been set via serial config
@@ -78,14 +79,17 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <OneWire.h>                                                  //http://www.pjrc.com/teensy/td_libs_OneWire.html
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
-
-const byte version = 29;         // firmware version divided by 10 e,g 16 = V1.6
+const byte version = 30;         // firmware version divided by 10 e,g 16 = V1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 // These variables control the transmit timing of the emonTX
+int TIME_BETWEEN_READINGS = 10;                                       // CHANGE THIS TO CHANGE DATA READINGS INTERVAL
 const unsigned long WDT_PERIOD = 80;                                  // mseconds.
-const unsigned long WDT_MAX_NUMBER = 100;                             // Data sent after WDT_MAX_NUMBER periods of WDT_PERIOD ms without pulses:
-                                                                      // 100s 80 = 8.0 seconds
+unsigned long WDT_MAX_NUMBER = 100;                                   // Data sent after WDT_MAX_NUMBER periods of WDT_PERIOD ms without pulses:
+                                                                      // 100s 80 = 8.0 seconds ***THIS PROPERTY IS MODIFIED BELOW IN RESPONSE TO MEASUREMENT TIMING***
+
+
+                                                                      
 const  unsigned long PULSE_MAX_NUMBER = 100;                          // Data sent after PULSE_MAX_NUMBER pulses
 const  unsigned long PULSE_MAX_DURATION = 50;
 
@@ -407,6 +411,8 @@ void loop()
 
   if (WDT_number>=WDT_MAX_NUMBER || pulseCount>=PULSE_MAX_NUMBER)
   {
+    unsigned long period_start = millis();
+    
     cli();
     emontx.pulseCount += (unsigned int) pulseCount;
     pulseCount = 0;
@@ -500,6 +506,11 @@ void loop()
     }
 
     WDT_number=0;
+
+    // Work out sleep duration
+    unsigned long runtime = millis() - period_start;
+    unsigned long sleeptime = (TIME_BETWEEN_READINGS*1000) - runtime - 1100;
+    WDT_MAX_NUMBER = (int) sleeptime / WDT_PERIOD;
   } // end WDT
 } // end loop
 //-------------------------------------------------------------------------------------------------------------------------------------------
