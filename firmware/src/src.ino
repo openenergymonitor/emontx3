@@ -160,9 +160,9 @@ unsigned long start=0;
 const char helpText1[] PROGMEM =                                 // Available Serial Commands
 "\n"
 "Available commands:\n"
-"  <nn> i     - set node IDs (standard node ids are 1..30)\n"
-"  <n> b      - set MHz band (4 = 433, 8 = 868, 9 = 915)\n"
-"  <nnn> g    - set network group (RFM12 only allows 212, 0 = any)\n"
+"  <nn>i     - set node IDs (standard node ids are 1..30)\n"
+"  <n>b      - set MHz band (4 = 433, 8 = 868, 9 = 915)\n"
+"  <nnn>g    - set network group (RFM12 only allows 212, 0 = any)\n"
 "  s          - save config to EEPROM\n"
 "  v          - Show firmware version\n"
 ;
