@@ -35,7 +35,7 @@ v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
 v2.8   27/02/17 Correct USA voltage to 120V
 v2.7   24/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config serial print if node ID has been set via serial config
 v2.6   31/10/16 Add RF config via serial & save to EEPROM feature. Allows RF setings (nodeID, freq, group) via serial
-v2.5   19/09/16 Increase baud 9600 > 115200 to emonesp compatiability
+v2.5   19/09/16 Increase baud 9600 > 115200 to emonesp compatibility
 v2.4   06/09/16 Update serial output to use CSV string pairs to work with emonESP e.g. 'ct1:100,ct2:329'
 v2.3   16/11/15 Change to unsigned long for pulse count and make default node ID 8 to avoid emonHub node decoder conflict & fix counting pulses faster than 110ms, strobed meter LED http://openenergymonitor.org/emon/node/11490
 v2.2   12/11/15 Remove DEBUG timming serial print code
@@ -79,7 +79,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 29;         // firmware version divided by 10 e,g 16 = V1.6
+const byte version = 29;         // firmware version divide by 10 to get version number e,g 16 = v1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
@@ -242,8 +242,8 @@ void setup()
 
   if ( CT_count == 0) CT1=1;                                             // If no CT's are connect ed CT1-4 then by default read from CT1
 
-  // Quick check to see if there is a voltage waveform present on the ACAC Voltage input
-  // Check consists of calculating the RMS from 100 samples of the voltage input.
+  // Quick check to see if there is a voltage waveform present on the AC-AC Voltage input
+  // Check consists of calculating the RMS value from 100 samples of the voltage input.
   start = millis();
   while (millis() < (start + 10000)){
     // If serial input of keyword string '+++' is entered during 10s POST then enter config mode
@@ -264,7 +264,7 @@ void setup()
   
   digitalWrite(LEDpin,LOW);
 
-  // Calculate if there is an ACAC adapter on analog input 0
+  // Calculate if there is an AC-AC adapter on analog input 0
   double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
   if (vrms>90) ACAC = 1; else ACAC=0;
 
@@ -284,7 +284,7 @@ void setup()
 
 
   //################################################################################################################################
-  //Setup and for presence of DS18B20
+  //Setup and test for presence of DS18B20
   //################################################################################################################################
   digitalWrite(DS18B20_PWR, HIGH); delay(100);
   sensors.begin();
@@ -386,7 +386,7 @@ void loop()
   start = millis();
 
   if (ACAC) {
-    delay(200);                         //if powering from AC-AC allow time for power supply to settle
+    delay(200);                         //if powering from AC-AC adapter allow time for power supply to settle
     emontx.Vrms=0;                      //Set Vrms to zero, this will be overwirtten by CT 1-4
   }
 
@@ -441,7 +441,7 @@ void loop()
     digitalWrite(DS18B20_PWR, HIGH);
     Sleepy::loseSomeTime(50);
     for(int j=0;j<numSensors;j++)
-      sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);                    // and set the a to d conversion resolution of each.
+      sensors.setResolution(allAddress[j], TEMPERATURE_PRECISION);                    // and set the A to D conversion resolution of each.
     sensors.requestTemperatures();
     Sleepy::loseSomeTime(ASYNC_DELAY);                                                // Must wait for conversion, since we use ASYNC mode
     for(byte j=0;j<numSensors;j++)
@@ -485,9 +485,9 @@ void loop()
 
   if (ACAC) {                                                               // If powered by AC-AC adaper (mains power) then delay instead of sleep
     delay(sleeptime);
-  } else {                                                                  // if powered by battery then sleep rather than dealy and disable LED to lower energy consumption
+  } else {                                                                  // if powered by battery then sleep rather than delay and disable LED to reduce energy consumption
                                    // lose an additional 500ms here (measured timing)
-    Sleepy::loseSomeTime(sleeptime-500);                                    // sleep or delay in seconds
+    Sleepy::loseSomeTime(sleeptime-500);                                    // sleep or delay in milliseconds
   }
 } // end loop
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -506,7 +506,7 @@ void send_rf_data()
   rf12_sleep(RF12_WAKEUP);
   rf12_sendNow(0, &emontx, sizeof emontx);                           //send temperature data via RFM12B using new rf12_sendNow wrapper
   rf12_sendWait(2);
-  if (!ACAC) rf12_sleep(RF12_SLEEP);                             //if powred by battery then put the RF module into sleep inbetween readings
+  if (!ACAC) rf12_sleep(RF12_SLEEP);                             //if powered by battery then put the RF module to sleep between readings
 }
 
 
@@ -532,7 +532,7 @@ double calc_rms(int pin, int samples)
 void onPulse()
 {
   if ( (millis() - pulsetime) > min_pulsewidth) {
-    pulseCount++;					//calculate wh elapsed from time between pulses
+    pulseCount++;					//calculate Wh elapsed from time between pulses
   }
   pulsetime=millis();
 }
