@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/openenergymonitor/emontx3.svg?branch=master)](https://travis-ci.org/openenergymonitor/emontx3)
 
-Part of the [OpenEnergyMonitor.org](https://openenergymonitor.org) project
+Part of [OpenEnergyMonitor.org](https://openenergymonitor.org) project
 
 - [Purchase emonTx V3](https://shop.openenergymonitor.com/emontx-v3-electricity-monitoring-transmitter-unit-433mhz/)
 - [emonTx Getting started guide](https://guide.openenergymonitor.org/setup/emontx)
