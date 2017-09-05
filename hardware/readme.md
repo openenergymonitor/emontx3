@@ -6,7 +6,7 @@ The emonTx V3.4 is the latest generation of the open-source hardware Arduino com
 
 ### V3.4.3
 
-**Spring 2017**
+**End 2017**
 
 - Same PCB design as V3.4.2
 - Increase reserviour capacitor of AC-DC circuit C18 16uF to 100uF to allow for greater peak power consumption of RFM69CW (compared to RFM12B)

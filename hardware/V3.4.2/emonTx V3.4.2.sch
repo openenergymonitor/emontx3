@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.6.0">
+<eagle version="8.3.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
@@ -23498,8 +23499,7 @@ Modified by Ciseco for Rapid Part 24-0357</description>
 <sheet>
 <plain>
 <text x="0" y="271.78" size="1.778" layer="91">AC-AC 9V measurement</text>
-<text x="214.63" y="204.47" size="1.778" layer="91">emonTx V3.4
-OpenEnergyMonitor.org</text>
+<text x="214.63" y="204.47" size="1.778" layer="91">OpenEnergyMonitor.org</text>
 <text x="214.63" y="200.66" size="1.778" layer="91">Glyn Hudson  -  March 2015</text>
 <wire x1="-99.06" y1="393.7" x2="-25.4" y2="393.7" width="0.1524" layer="94"/>
 <wire x1="-25.4" y1="393.7" x2="38.1" y2="393.7" width="0.1524" layer="94"/>
@@ -23527,7 +23527,7 @@ Sensors</text>
 Sensors</text>
 <text x="-83.82" y="190.5" size="1.778" layer="91">Design is provided "AS IS" and "WITH ALL FAULTS. OpenEnergyMonitor DISCLAIMS ALL OTHER WARRANTIES, EXPRESS OR IMPLIED,</text>
 <text x="-83.82" y="194.31" size="1.778" layer="91">Hardware design files are licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License</text>
-<text x="-97.79" y="396.24" size="5.08" layer="91">emonTx V3.4.1</text>
+<text x="-97.79" y="396.24" size="5.08" layer="91">emonTx V3.4.2</text>
 <text x="1.27" y="360.68" size="1.778" layer="91">D19 / ADC 5 DS18B20 PWR</text>
 <text x="1.27" y="363.22" size="1.778" layer="91">D5 - one-wire data</text>
 <text x="1.27" y="355.6" size="1.778" layer="91">D3 - IRQ1 PQM</text>
@@ -24440,7 +24440,6 @@ Power Monitor</text>
 <pinref part="R28" gate="G$1" pin="2"/>
 <pinref part="R13" gate="G$1" pin="2"/>
 <junction x="7.62" y="259.08"/>
-<pinref part="R13" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$7" class="0">
