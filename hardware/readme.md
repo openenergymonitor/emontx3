@@ -6,9 +6,9 @@ The emonTx V3.4 is the latest generation of the open-source hardware Arduino com
 
 ### V3.4.3
 
-**End 2017**
+**Sep 2017**
 
-- Same PCB design as V3.4.2
+- Add extra UART header with Rx/Tx swap-over for easy ESP connection
 - Increase  reservoir capacitor of AC-DC circuit C18 16uF to 100uF to allow for greater peak power consumption of RFM69CW (compared to RFM12B)
 - Change Burden resistors R7, R8, R9 (22R) from 1% to 0.5% tolerance  to increase accuracy. Wanted to change to 0.1% but unable to source
 - Changed Burden resistor R18 (120R) from 1 % to 0.1%
