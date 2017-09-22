@@ -23494,6 +23494,8 @@ Modified by Ciseco for Rapid Part 24-0357</description>
 <part name="D6" library="microbuilder" deviceset="DIODE" device="SOD-523" value="ESD5Z3.3T1G"/>
 <part name="SUPPLY18" library="supply2" deviceset="GND" device=""/>
 <part name="C16" library="rcl" deviceset="C-EU" device="C0603" value="10uF"/>
+<part name="JP3" library="SparkFun" deviceset="FTDI_BASIC" device="PTH" value="FTDI"/>
+<part name="SUPPLY19" library="supply2" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -23545,6 +23547,8 @@ ADC6 / Dig20
 Switch</text>
 <text x="221.488" y="271.018" size="5.08" layer="91">Battery 
 Power Monitor</text>
+<text x="254.508" y="382.778" size="2.54" layer="91">ESP UART</text>
+<text x="239.268" y="362.458" size="2.54" layer="91">emonTx UART</text>
 </plain>
 <instances>
 <instance part="CT4" gate="1" x="-77.47" y="219.71" rot="R180"/>
@@ -23627,7 +23631,7 @@ Power Monitor</text>
 <instance part="H4" gate="G$1" x="-6.35" y="223.52"/>
 <instance part="U$4" gate="G$1" x="-6.35" y="238.76"/>
 <instance part="U$5" gate="G$1" x="1.27" y="238.76"/>
-<instance part="JP1" gate="G$1" x="269.24" y="355.6" rot="R180"/>
+<instance part="JP1" gate="G$1" x="274.32" y="347.98" rot="R180"/>
 <instance part="AGND1" gate="VR1" x="-45.72" y="325.12"/>
 <instance part="AGND2" gate="VR1" x="-45.72" y="292.1"/>
 <instance part="AGND3" gate="VR1" x="-45.72" y="261.62"/>
@@ -23742,8 +23746,8 @@ Power Monitor</text>
 <instance part="ISP1" gate="G$1" x="241.3" y="314.96"/>
 <instance part="GND1" gate="1" x="259.08" y="307.34"/>
 <instance part="P+3" gate="G$1" x="256.54" y="317.5"/>
-<instance part="C2" gate="G$1" x="246.38" y="360.68" rot="R90"/>
-<instance part="SUPPLY2" gate="GND" x="254" y="342.9"/>
+<instance part="C2" gate="G$1" x="251.46" y="353.06" rot="R90"/>
+<instance part="SUPPLY2" gate="GND" x="259.08" y="335.28"/>
 <instance part="R33" gate="G$1" x="1.27" y="321.564" smashed="yes" rot="R270">
 <attribute name="NAME" x="-3.81" y="324.104" size="1.778" layer="95" rot="R270"/>
 <attribute name="VALUE" x="-1.27" y="324.104" size="1.778" layer="96" rot="R270"/>
@@ -23794,6 +23798,8 @@ Power Monitor</text>
 <instance part="D6" gate="G$1" x="20.32" y="256.54" rot="R90"/>
 <instance part="SUPPLY18" gate="GND" x="20.32" y="251.46" rot="MR0"/>
 <instance part="C16" gate="G$1" x="230.632" y="342.9"/>
+<instance part="JP3" gate="G$1" x="274.32" y="373.38" rot="R180"/>
+<instance part="SUPPLY19" gate="GND" x="269.24" y="363.22"/>
 </instances>
 <busses>
 </busses>
@@ -23822,8 +23828,8 @@ Power Monitor</text>
 </segment>
 <segment>
 <pinref part="JP1" gate="G$1" pin="4"/>
-<wire x1="264.16" y1="353.06" x2="259.08" y2="353.06" width="0.1524" layer="91"/>
-<label x="254" y="353.06" size="1.778" layer="95"/>
+<wire x1="269.24" y1="345.44" x2="264.16" y2="345.44" width="0.1524" layer="91"/>
+<label x="259.08" y="345.44" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="J6" gate="G$1" pin="2"/>
@@ -23841,6 +23847,11 @@ Power Monitor</text>
 <pinref part="P+9" gate="1" pin="+5V"/>
 <pinref part="U$13" gate="G$1" pin="7"/>
 <wire x1="5.842" y1="308.864" x2="16.51" y2="308.864" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="JP3" gate="G$1" pin="4"/>
+<wire x1="269.24" y1="370.84" x2="261.62" y2="370.84" width="0.1524" layer="91"/>
+<label x="259.08" y="370.84" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="2">
@@ -23965,10 +23976,10 @@ Power Monitor</text>
 </segment>
 <segment>
 <pinref part="JP1" gate="G$1" pin="6"/>
-<wire x1="264.16" y1="347.98" x2="254" y2="347.98" width="0.1524" layer="91"/>
-<wire x1="254" y1="347.98" x2="254" y2="345.44" width="0.1524" layer="91"/>
+<wire x1="269.24" y1="340.36" x2="259.08" y2="340.36" width="0.1524" layer="91"/>
+<wire x1="259.08" y1="340.36" x2="259.08" y2="337.82" width="0.1524" layer="91"/>
 <pinref part="SUPPLY2" gate="GND" pin="GND"/>
-<label x="254" y="347.98" size="1.778" layer="95"/>
+<label x="259.08" y="340.36" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="U$14" gate="G$1" pin="GND"/>
@@ -24045,6 +24056,10 @@ Power Monitor</text>
 <segment>
 <pinref part="D6" gate="G$1" pin="A"/>
 <pinref part="SUPPLY18" gate="GND" pin="GND"/>
+</segment>
+<segment>
+<pinref part="JP3" gate="G$1" pin="6"/>
+<pinref part="SUPPLY19" gate="GND" pin="GND"/>
 </segment>
 </net>
 <net name="ADC0" class="0">
@@ -24548,8 +24563,8 @@ Power Monitor</text>
 </segment>
 <segment>
 <pinref part="C2" gate="G$1" pin="1"/>
-<wire x1="243.84" y1="360.68" x2="236.22" y2="360.68" width="0.1524" layer="91"/>
-<label x="233.68" y="363.22" size="1.778" layer="95"/>
+<wire x1="248.92" y1="353.06" x2="241.3" y2="353.06" width="0.1524" layer="91"/>
+<label x="238.76" y="355.6" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D5" class="0">
@@ -24630,8 +24645,13 @@ Power Monitor</text>
 </segment>
 <segment>
 <pinref part="JP1" gate="G$1" pin="2"/>
-<wire x1="264.16" y1="358.14" x2="259.08" y2="358.14" width="0.1524" layer="91"/>
-<label x="254" y="358.14" size="1.778" layer="95"/>
+<wire x1="269.24" y1="350.52" x2="264.16" y2="350.52" width="0.1524" layer="91"/>
+<label x="259.08" y="350.52" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP3" gate="G$1" pin="3"/>
+<wire x1="269.24" y1="373.38" x2="261.62" y2="373.38" width="0.1524" layer="91"/>
+<label x="259.08" y="373.38" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D6" class="0">
@@ -24803,8 +24823,13 @@ Power Monitor</text>
 </segment>
 <segment>
 <pinref part="JP1" gate="G$1" pin="3"/>
-<wire x1="264.16" y1="355.6" x2="259.08" y2="355.6" width="0.1524" layer="91"/>
-<label x="254" y="355.6" size="1.778" layer="95"/>
+<wire x1="269.24" y1="347.98" x2="264.16" y2="347.98" width="0.1524" layer="91"/>
+<label x="259.08" y="347.98" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP3" gate="G$1" pin="2"/>
+<wire x1="269.24" y1="375.92" x2="261.62" y2="375.92" width="0.1524" layer="91"/>
+<label x="259.08" y="375.92" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -24895,14 +24920,18 @@ Power Monitor</text>
 <net name="N$19" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="5"/>
-<wire x1="264.16" y1="350.52" x2="259.08" y2="350.52" width="0.1524" layer="91"/>
+<wire x1="269.24" y1="342.9" x2="264.16" y2="342.9" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$23" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="1"/>
 <pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="264.16" y1="360.68" x2="251.46" y2="360.68" width="0.1524" layer="91"/>
+<wire x1="269.24" y1="353.06" x2="256.54" y2="353.06" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="353.06" x2="256.54" y2="378.46" width="0.1524" layer="91"/>
+<junction x="256.54" y="353.06"/>
+<pinref part="JP3" gate="G$1" pin="1"/>
+<wire x1="269.24" y1="378.46" x2="256.54" y2="378.46" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
