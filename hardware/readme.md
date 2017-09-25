@@ -8,9 +8,10 @@ The emonTx V3.4 is the latest generation of the open-source hardware Arduino com
 
 **Sep 2017**
 
-- Minor PCB changes:
--- fix overlayed double via
--- Add protection ring for top-right fiducial
+Minor PCB changes:
+
+- fix overlayed double via
+- Add protection ring for top-right fiducial
 
 ### V3.4.3
 
