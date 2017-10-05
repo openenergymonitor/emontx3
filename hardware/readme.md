@@ -4,6 +4,12 @@ The emonTx V3.4 is the latest generation of the open-source hardware Arduino com
 
 ## Hardware change log
 
+### V3.4.5 (un-released)
+
+TBC
+
+- Update R13 & R14 from 1% to 0.1%/0.5% tolerance
+
 ### V3.4.4
 
 **Sep 2017**
