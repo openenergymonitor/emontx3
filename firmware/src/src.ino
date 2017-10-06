@@ -56,7 +56,7 @@ emonhub.conf node decoder (nodeid is 8 when switch is off, 7 when switch is on)
 See: https://github.com/openenergymonitor/emonhub/blob/emon-pi/configuration.md
 
 [[8]]
-    nodename = emonTx_3
+    nodename = emonTx_3-custom
     firmware =V2_3_emonTxV3_4_DiscreteSampling
     hardware = emonTx_(NodeID_DIP_Switch1:OFF)
     [[[rx]]]
