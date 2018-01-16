@@ -31,6 +31,7 @@
 
 
 Change Log:
+V3.0   16/01/17 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
 v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
 v2.8   27/02/17 Correct USA voltage to 120V
 v2.7   24/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config serial print if node ID has been set via serial config
@@ -79,7 +80,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 29;         // firmware version divide by 10 to get version number e,g 16 = v1.6
+const byte version = 30;         // firmware version divide by 10 to get version number e,g 16 = v1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
@@ -187,7 +188,7 @@ void setup()
   //DIP SWITCHES
   pinMode(DIP_switch1, INPUT_PULLUP);
   pinMode(DIP_switch2, INPUT_PULLUP);
-  
+
   Serial.begin(115200);
   Serial.print("emonTx V3.4 Discrete Sampling V"); Serial.println(version*0.1);
   Serial.println("OpenEnergyMonitor.org");
@@ -210,7 +211,7 @@ void setup()
   }
   Serial.println("POST.....wait 10s");
   Serial.println("'+++' then [Enter] for RF config mode");
-  
+
 
 
   if (digitalRead(DIP_switch2)==LOW) USA=TRUE;                            // IF DIP switch 2 is switched on then activate USA mode
@@ -222,7 +223,7 @@ void setup()
   }
 
   delay(10);
-  
+
   if (RF_STATUS==1){
     rf12_initialize(nodeID, RF_freq, networkGroup);                         // initialize RFM12B/rfm69CW
     for (int i=10; i>=0; i--)                                               // Send RF test sequence (for factory testing)
@@ -234,7 +235,7 @@ void setup()
     rf12_sendWait(2);
     emontx.power1=0;
   }
-  
+
   if (analogRead(1) > 0) {CT1 = 1; CT_count++;} else CT1=0;              // check to see if CT is connected to CT1 input, if so enable that channel
   if (analogRead(2) > 0) {CT2 = 1; CT_count++;} else CT2=0;              // check to see if CT is connected to CT2 input, if so enable that channel
   if (analogRead(3) > 0) {CT3 = 1; CT_count++;} else CT3=0;              // check to see if CT is connected to CT3 input, if so enable that channel
@@ -261,7 +262,7 @@ void setup()
       }
     }
   }
-  
+
   digitalWrite(LEDpin,LOW);
 
   // Calculate if there is an AC-AC adapter on analog input 0
@@ -356,17 +357,17 @@ void setup()
   }
 
 
-  if (CT1) ct1.current(1, Ical1);             // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
-  if (CT2) ct2.current(2, Ical2);             // CT ADC channel 2, calibration.
-  if (CT3) ct3.current(3, Ical3);             // CT ADC channel 3, calibration.
-  if (CT4) ct4.current(4, Ical4);             // CT ADC channel 4, calibration.  calibration (2000 turns / 120 Ohm burden resistor = 16.66) high accuracy @ low power -  4.5kW Max @ 240V
+  ct1.current(1, Ical1);             // CT ADC channel 1, calibration.  calibration (2000 turns / 22 Ohm burden resistor = 90.909)
+  ct2.current(2, Ical2);             // CT ADC channel 2, calibration.
+  ct3.current(3, Ical3);             // CT ADC channel 3, calibration.
+  ct4.current(4, Ical4);             // CT ADC channel 4, calibration.  calibration (2000 turns / 120 Ohm burden resistor = 16.66) high accuracy @ low power -  4.5kW Max @ 240V
 
   if (ACAC)
   {
-    if (CT1) ct1.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
-    if (CT2) ct2.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
-    if (CT3) ct3.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
-    if (CT4) ct4.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
+    ct1.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
+    ct2.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
+    ct3.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
+    ct4.voltage(0, Vcal, phase_shift);          // ADC pin, Calibration, phase_shift
   }
 
   attachInterrupt(pulse_countINT, onPulse, FALLING);     // Attach pulse counting interrupt pulse counting
@@ -395,40 +396,48 @@ void loop()
   // emontx.power3 = 1;
   // emontx.power4 = 1;
 
-  if (CT1) {
+  if (CT1 || ACAC) {                                          // Awlays sample for CT's if powered by AC-AC
     if (ACAC) {
-      ct1.calcVI(no_of_half_wavelengths,timeout); emontx.power1=ct1.realPower;
+      ct1.calcVI(no_of_half_wavelengths,timeout);
+      emontx.power1=ct1.realPower;
       emontx.Vrms=ct1.Vrms*100;
-    } else {
+    } else {                                                  //apparent power calculation if AC-AC not connected
       emontx.power1 = ct1.calcIrms(no_of_samples)*Vrms;
     }
+    if (analogRead(1) == 0) emontx.power1=0;                  // CT disconnected
   }
 
-  if (CT2) {
+  if (CT2 || ACAC) {
     if (ACAC) {
-      ct2.calcVI(no_of_half_wavelengths,timeout); emontx.power2=ct2.realPower;
+      ct2.calcVI(no_of_half_wavelengths,timeout);
+      emontx.power2=ct2.realPower;
       emontx.Vrms=ct2.Vrms*100;
     } else {
       emontx.power2 = ct2.calcIrms(no_of_samples)*Vrms;
     }
+    if (analogRead(2) == 0) emontx.power2=0;    // CT disconnected
   }
 
-  if (CT3) {
+  if (CT3 || ACAC) {
     if (ACAC) {
-      ct3.calcVI(no_of_half_wavelengths,timeout); emontx.power3=ct3.realPower;
+      ct3.calcVI(no_of_half_wavelengths,timeout);
+      emontx.power3=ct3.realPower;
       emontx.Vrms=ct3.Vrms*100;
     } else {
       emontx.power3 = ct3.calcIrms(no_of_samples)*Vrms;
     }
+    if (analogRead(3) == 0) emontx.power3=0;    // CT disconnected
   }
 
-  if (CT4) {
+  if (CT4 || ACAC) {
     if (ACAC) {
-      ct4.calcVI(no_of_half_wavelengths,timeout); emontx.power4=ct4.realPower;
+      ct4.calcVI(no_of_half_wavelengths,timeout);
+      emontx.power4=ct4.realPower;
       emontx.Vrms=ct4.Vrms*100;
     } else {
       emontx.power4 = ct4.calcIrms(no_of_samples)*Vrms;
     }
+    if (analogRead(4) == 0) emontx.power4=0;    // CT disconnected
   }
 
   if (!ACAC){                                                                         // read battery voltage if powered by DC
