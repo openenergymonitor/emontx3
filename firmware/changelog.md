@@ -1,6 +1,6 @@
 ## emonTx V3.4 firmware change log:
 
-- V3.0   16/01/17 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
+- V3.0   16/01/18 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
 - v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
 - v2.8   27/02/17 Correct USA voltage to 120V
 - v2.7   34/02/17 Fix USA apparent power readings (assuming 110VRMS when no AC-AC voltage sample adapter is present). Fix DIP switch nodeID config incorrect serial print if node ID has been set via EEPROM serial config and DIP switch.
