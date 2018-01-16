@@ -34,7 +34,7 @@ Upload Pre-compiled firmware using [emonUpload tool](https://github.com/openener
 
 Compile and upload firmware using [PlatformIO](https://platformio.org)
 
-### Install patformio (if needed)
+### Install platformio (if needed)
 
 See [platformio install quick start](http://docs.platformio.org/en/latest/installation.html#super-quick-mac-linux)
 
