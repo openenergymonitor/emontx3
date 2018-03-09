@@ -12,7 +12,9 @@ TBC
 
 ### V3.4.4
 
-**Sep 2017**
+~~**Sep 2017:**~~ **Shipping Now March 2018**
+
+- Identifiable with blue CT4 jackplug socket
 
 Minor PCB changes:
 
