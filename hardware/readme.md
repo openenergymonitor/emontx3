@@ -10,11 +10,7 @@ TBC
 
 - Update R13 & R14 from 1% to 0.1%/0.5% tolerance
 
-### V3.4.4
-
-~~**Sep 2017:**~~ **Shipping Now March 2018**
-
-- Identifiable with blue CT4 jackplug socket
+### V3.4.4 (un-released)
 
 Minor PCB changes:
 
@@ -23,8 +19,9 @@ Minor PCB changes:
 
 ### V3.4.3
 
-**Sep 2017**
+**Shipping March/April 2018 onwards**
 
+- Identifiable with blue CT4 jackplug socket (mostly) 
 - Add extra UART header with Rx/Tx swap-over for easy ESP connection
 - Increase  reservoir capacitor of AC-DC circuit C18 16uF to 100uF to allow for greater peak power consumption of RFM69CW (compared to RFM12B)
 - Change Burden resistors R7, R8, R9 (22R) from 1% to 0.5% tolerance  to increase accuracy. Wanted to change to 0.1% but unable to source
