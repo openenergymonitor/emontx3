@@ -95,6 +95,7 @@ Live BOM: https://octopart.com/bom-tool/xiwE7CiN
 
 ![](portmap.png)
 
+See [Hardware Wiki Documentation](http://wiki.openenergymonitor.org/index.php?title=EmonTx_V3.4) for further technical documentation regarding emonTx.
 
 ### Open Hardware
 
