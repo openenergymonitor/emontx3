@@ -21,7 +21,7 @@ Minor PCB changes:
 
 **Shipping March/April 2018 onwards**
 
-- Identifiable with blue CT4 jackplug socket (mostly) 
+- Identifiable with blue CT4 jackplug socket (mostly)
 - Add extra UART header with Rx/Tx swap-over for easy ESP connection
 - Increase  reservoir capacitor of AC-DC circuit C18 16uF to 100uF to allow for greater peak power consumption of RFM69CW (compared to RFM12B)
 - Change Burden resistors R7, R8, R9 (22R) from 1% to 0.5% tolerance  to increase accuracy. Wanted to change to 0.1% but unable to source
@@ -70,7 +70,7 @@ Live BOM: https://octopart.com/bom-tool/xiwE7CiN
 
 ## Links
 
-- [Purchase]([http://shop.openenergymonitor.com/emontx-v3/])
+- [Purchase](http://shop.openenergymonitor.com/emontx-v3/)
 
 - [User Guide](https://guide.openenergymonitor.org/setup/emontx)
 
@@ -91,6 +91,9 @@ Live BOM: https://octopart.com/bom-tool/xiwE7CiN
 
 ![board.png](board.png)
 
+## Portmap
+
+![](portmap.png)
 
 
 ### Open Hardware
