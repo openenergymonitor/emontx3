@@ -99,7 +99,7 @@ float Vcal=                       268.97;                             // (230V x
 //float Vcal=276.9;
 //const float Vcal=               260;                             //  Calibration for EU AC-AC adapter 77DE-06-09
 const float Vcal_USA=             130.0;                             //Calibration for US AC-AC adapter 77DA-10-09
-boolean USA=FALSE;
+boolean USA=false;
 
 const float phase_shift=          1.7;
 const int no_of_samples=          1662;
@@ -214,10 +214,10 @@ void setup()
 
 
 
-  if (digitalRead(DIP_switch2)==LOW) USA=TRUE;                            // IF DIP switch 2 is switched on then activate USA mode
+  if (digitalRead(DIP_switch2)==LOW) USA=true;                            // IF DIP switch 2 is switched on then activate USA mode
 
 
-  if (USA==TRUE){                                                         // if USA mode is true
+  if (USA==true){                                                         // if USA mode is true
     Vcal=Vcal_USA;                                                        // Assume USA AC/AC adatper is being used, set calibration accordingly
     Vrms = Vrms_USA;                                                      /// USE 110V for USA apparent power
   }
@@ -320,7 +320,7 @@ void setup()
     if (ACAC) {
       Serial.println("AC-AC detected - Real Power measure enabled");
       Serial.println("assuming pwr from AC-AC (jumper closed)");
-      if (USA==TRUE) Serial.println("USA mode active");
+      if (USA==true) Serial.println("USA mode active");
       Serial.print("Vcal: "); Serial.println(Vcal);
       Serial.print("Phase Shift: "); Serial.println(phase_shift);
     } else {
