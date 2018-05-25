@@ -80,7 +80,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 30;         // firmware version divide by 10 to get version number e,g 16 = v1.6
+const byte version = 31;         // firmware version divide by 10 to get version number e,g 16 = v1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
@@ -211,6 +211,7 @@ void setup()
   }
   Serial.println("POST.....wait 10s");
   Serial.println("'+++' then [Enter] for RF config mode");
+  Serial.println("(Arduino IDE Serial Monitor: make sure 'Both NL & CR' is selected)");
 
 
 
