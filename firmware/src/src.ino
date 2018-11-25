@@ -19,14 +19,14 @@
 
 /*Recommended node ID allocation
 ------------------------------------------------------------------------------------------------------------
--ID-	-Node Type-
-0	- Special allocation in JeeLib RFM12 driver - reserved for OOK use
+-ID-  -Node Type-
+0 - Special allocation in JeeLib RFM12 driver - reserved for OOK use
 1-4     - Control nodes
-5-10	- Energy monitoring nodes
-11-14	--Un-assigned --
-15-16	- Base Station & logging nodes
-17-30	- Environmental sensing nodes (temperature humidity etc.)
-31	- Special allocation in JeeLib RFM12 driver - Node31 can communicate with nodes on any network group
+5-10  - Energy monitoring nodes
+11-14 --Un-assigned --
+15-16 - Base Station & logging nodes
+17-30 - Environmental sensing nodes (temperature humidity etc.)
+31  - Special allocation in JeeLib RFM12 driver - Node31 can communicate with nodes on any network group
 -------------------------------------------------------------------------------------------------------------
 
 
@@ -79,6 +79,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 
 #include <OneWire.h>                                                  //http://www.pjrc.com/teensy/td_libs_OneWire.html
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
+#include <DS2438.h>
 
 
 const byte version = 31;         // firmware version divide by 10 to get version number e,g 16 = v1.6
@@ -543,15 +544,54 @@ double calc_rms(int pin, int samples)
 void onPulse()
 {
   if ( (millis() - pulsetime) > min_pulsewidth) {
-    pulseCount++;					//calculate Wh elapsed from time between pulses
+    pulseCount++;         //calculate Wh elapsed from time between pulses
   }
   pulsetime=millis();
 }
 
-int get_temperature(byte sensor)
-{
-  float temp=(sensors.getTempC(allAddress[sensor]));
-  if ((temp<125.0) && (temp>-55.0)) return(temp*10);            //if reading is within range for the sensor convert float to int ready to send via RF
+int get_temperature(byte sensor) {
+
+  float temp = 300 ;
+
+  if (DEBUG) {
+  Serial.print("Sensor address = " );
+  for(int x=8; x>0 ; x--){ 
+    Serial.print(allAddress[sensor][x], HEX) ;
+    Serial.print(" ") ;
+  }
+  Serial.println(); 
+  }
+  
+  if (allAddress[sensor][0] == 0x26) { 
+      DS2438 ds2438(&oneWire, allAddress[sensor]);
+      ds2438.begin() ;
+      ds2438.update() ;
+      if (ds2438.isError()) {
+        Serial.println("Error reading from DS2438 device");
+    } else {
+        temp = ds2438.getTemperature() ;
+        if (DEBUG) {
+        Serial.print("DS2438 Temperature = ");
+        Serial.print(temp, 1);
+        Serial.println() ;
+        }
+    }
+  } else if (allAddress[sensor][0] == 0x28) {
+
+     temp=(sensors.getTempC(allAddress[sensor]));
+     if (DEBUG) {
+        Serial.print("DS18x20 Temperature = ");
+        Serial.print(temp, 1);
+        Serial.println() ;
+        }
+  }
+
+  if ((temp<125.0) && (temp>-55.0)) {
+    return(temp*10);            //if reading is within range for the sensor convert float to int ready to send via RF
+  } else {
+    return -55;  // out of range return minimum
+  }
+  
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
