@@ -1,6 +1,6 @@
 ## emonTx V3.4 firmware change log:
 
-- V3.1   25/05/19 Prompt to set 'Both CR & NL' on serial monitor.
+- V3.1   25/05/18 Prompt to set 'Both CR & NL' on serial monitor.
 - V3.0   16/01/18 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
 - v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
 - v2.8   27/02/17 Correct USA voltage to 120V
