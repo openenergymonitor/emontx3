@@ -224,8 +224,11 @@ void setup()
     Vcal=Vcal_USA;                                                        // Assume USA AC/AC adatper is being used, set calibration accordingly
     Vrms = Vrms_USA;                                                      /// USE 110V for USA apparent power
   }
-
-  delay(10);
+ 
+  for (int i=0; i<5; i++){   //delay 10s
+    delay(1000); 
+    wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
+  }
 
   if (RF_STATUS==1){
     rf12_initialize(nodeID, RF_freq, networkGroup);                         // initialize RFM12B/rfm69CW
@@ -246,14 +249,15 @@ void setup()
 
   if ( CT_count == 0) CT1=1;                                             // If no CT's are connect ed CT1-4 then by default read from CT1
 
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
   // Quick check to see if there is a voltage waveform present on the AC-AC Voltage input
   // Check consists of calculating the RMS value from 100 samples of the voltage input.
   start = millis();
-  while (millis() < (start + 10000)){
+  while (millis() < (start + 7000)){
     // If serial input of keyword string '+++' is entered during 10s POST then enter config mode
     if (Serial.available()){
       if ( Serial.readString() == "+++\r\n"){
-        Serial.println("Entering config mode...");
+        Serial.println("Entering config mode...save and exit within 8s");
         showString(helpText1);
         // char c[]="v"
         config(char('v'));
@@ -271,7 +275,7 @@ void setup()
   // Calculate if there is an AC-AC adapter on analog input 0
   double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
   if (vrms>90) ACAC = 1; else ACAC=0;
-
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
   if (ACAC)
   {
     for (int i=0; i<10; i++)                                              // indicate AC has been detected by flashing LED 10 times
@@ -303,7 +307,7 @@ void setup()
 
   delay(500);
   digitalWrite(DS18B20_PWR, LOW);
-
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
   if (numSensors==0) DS18B20_STATUS=0;
     else DS18B20_STATUS=1;
 
@@ -377,7 +381,7 @@ void setup()
 
   for(byte j=0;j<MaxOnewire;j++)
       emontx.temp[j] = 3000;                             // If no temp sensors connected default to status code 3000
-                                                         // will appear as 300 once multipled by 0.1 in emonhub
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash                                                        // will appear as 300 once multipled by 0.1 in emonhub
 } //end SETUP
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
