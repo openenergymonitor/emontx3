@@ -22,12 +22,12 @@ void setup(void)
 {
   // start serial port
   Serial.begin(115200);
-  Serial.println("Dallas Temperature IC Control Library Demo");
+  Serial.println("DS18B20 emonTx Tester");
 
   pinMode(LEDpin, OUTPUT);
   pinMode(DS18B20_PWR, OUTPUT);
-  digitalWrite(DS18B20_PWR, HIGH); delay(100);
-  digitalWrite(LEDpin, LOW);
+  digitalWrite(DS18B20_PWR, HIGH);
+  digitalWrite(LEDpin, HIGH); delay(100); digitalWrite(LEDpin, LOW);
 
   // Start up the library
   sensors.begin();

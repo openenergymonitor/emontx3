@@ -31,6 +31,7 @@
 
 
 Change Log:
+V3.2   27/08/19 Add watchdog reset 
 V3.1   25/05/18 Add prompt for serial config
 V3.0   16/01/18 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
 v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
@@ -71,7 +72,8 @@ See: https://github.com/openenergymonitor/emonhub/blob/emon-pi/configuration.md
 
 #define emonTxV3                                                                          // Tell emonLib this is the emonTx V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonTx V3 eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
 #define RF69_COMPAT 1                                                              // Set to 1 if using RFM69CW or 0 if using RFM12B
-#include <JeeLib.h>                                                                      //https://github.com/jcw/jeelib - Tested with JeeLib 3/11/14
+#include <avr/wdt.h>
+#include <JeeLib.h>                                                                      //https://github.com/jcw/jeelib 
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption
 
 #include "EmonLib.h"                                                                    // Include EmonLib energy monitoring library https://github.com/openenergymonitor/EmonLib
@@ -81,7 +83,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 31;         // firmware version divide by 10 to get version number e,g 16 = v1.6
+const byte version = 32;         // firmware version divide by 10 to get version number e,g 16 = v1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
@@ -180,15 +182,14 @@ void setup()
 {
   pinMode(LEDpin, OUTPUT);
   pinMode(DS18B20_PWR, OUTPUT);
-
   pinMode(pulse_count_pin, INPUT_PULLUP);                     // Set emonTx V3.4 interrupt pulse counting pin as input (Dig 3 / INT1)
   emontx.pulseCount=0;                                        // Make sure pulse count starts at zero
-
   digitalWrite(LEDpin,HIGH);
-
   //DIP SWITCHES
   pinMode(DIP_switch1, INPUT_PULLUP);
   pinMode(DIP_switch2, INPUT_PULLUP);
+
+  wdt_enable(WDTO_8S);                                             // Enable reset watchdog
 
   Serial.begin(115200);
   Serial.print("emonTx V3.4 Discrete Sampling V"); Serial.println(version*0.1);
@@ -495,7 +496,10 @@ void loop()
   unsigned long sleeptime = (TIME_BETWEEN_READINGS*1000) - runtime - 100;
 
   if (ACAC) {                                                               // If powered by AC-AC adaper (mains power) then delay instead of sleep
-    delay(sleeptime);
+    for (int i=0; i<5; i++){ 
+      delay(sleeptime/5); 
+      wdt_reset();        //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
+    }
   } else {                                                                  // if powered by battery then sleep rather than delay and disable LED to reduce energy consumption
                                    // lose an additional 500ms here (measured timing)
     Sleepy::loseSomeTime(sleeptime-500);                                    // sleep or delay in milliseconds
