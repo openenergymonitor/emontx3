@@ -491,14 +491,23 @@ void loop()
     send_rf_data();                                                           // *SEND RF DATA* - see emontx_lib
   }
 
+  unsigned long sleeptime = 0;
+  unsigned long max_runtime = (TIME_BETWEEN_READINGS*1000) - 100;
   unsigned long runtime = millis() - start;
-  unsigned long sleeptime = (TIME_BETWEEN_READINGS*1000) - runtime - 100;
+
+  if (runtime < max_runtime) {
+    sleeptime = max_runtime - runtime;
+  }
 
   if (ACAC) {                                                               // If powered by AC-AC adaper (mains power) then delay instead of sleep
     delay(sleeptime);
   } else {                                                                  // if powered by battery then sleep rather than delay and disable LED to reduce energy consumption
+    word time_to_loose = 0;
+    if (sleeptime > 500) {
+      time_to_loose = sleeptime-500;
+    }
                                    // lose an additional 500ms here (measured timing)
-    Sleepy::loseSomeTime(sleeptime-500);                                    // sleep or delay in milliseconds
+    Sleepy::loseSomeTime(time_to_loose);                                    // sleep or delay in milliseconds
   }
 } // end loop
 //-------------------------------------------------------------------------------------------------------------------------------------------
