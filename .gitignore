@@ -4,6 +4,7 @@
 .clang_complete
 .gcc-flags.json
 .piolibdeps
+.pio
 
 # Ignore list for Eagle, a PCB layout tool
 
