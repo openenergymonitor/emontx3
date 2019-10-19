@@ -1,6 +1,6 @@
 ## Hardware & Firmware for emonTx V3.4.x
 
-**Note:** The default EmonTxV3 firmware is now the [EmonTxV3CM Continuous Monitoring firmware](https://github.com/openenergymonitor/EmonTxV3CM), the new firmware provides better results by sampling continuously with the average reported at the end of each 10s period. This differs from the discrete sampling firmware which takes 0.3s long snapshots for each CT channel in every 10s period. Continuous sampling increases power consumption by a very small amount as the EmonTx cannot go to sleep and so is not compatible with battery operation. For battery operation use the discreet sampling firmware below.
+**Note:** The default EmonTxV3 firmware is now the [EmonTxV3CM Continuous Monitoring firmware](https://github.com/openenergymonitor/EmonTxV3CM), the new firmware provides better results by sampling continuously with the average reported at the end of each 10s period. This differs from the discrete sampling firmware which takes 0.3s long snapshots for each CT channel in every 10s period. Continuous sampling increases power consumption by a very small amount as the EmonTx cannot go to sleep and so is not compatible with battery operation. For battery operation use the discrete sampling firmware below.
 
 *Low power, wireless, Arduino based energy monitoring node.*
 
