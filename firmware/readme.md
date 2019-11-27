@@ -1,10 +1,12 @@
-# Default emonTx Firmware
+# Discrete Sampling emonTx Firmware
 
 ## Firmware
 
-**All pre-assembled emonTx V3's are shipped with this firmware**
+~~All pre-assembled emonTx V3's are shipped with this firmware~~
 
-**Key features:**
+**From November 2019 [emonTx Continous Sampling Fimrmware](https://github.com/openenergymonitor/EmonTxV3CM) will be shipped as default unless a battery holder is chosen at checkout.** 
+
+**Key features Discrete Sampling:**
 
 * Detection of AC-AC adapter sets Apparent Power / Real Power Sampling accordingly
 * Detection of battery / USB 5V or AC > DC power method and sets sleep mode accordingly
