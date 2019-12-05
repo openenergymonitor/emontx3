@@ -83,7 +83,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DallasTemperature.h>                                        //http://download.milesburton.com/Arduino/MaximTemperature/DallasTemperature_LATEST.zip
 
 
-const byte version = 32;         // firmware version divide by 10 to get version number e,g 16 = v1.6
+const byte version = 33;         // firmware version divide by 10 to get version number e,g 16 = v1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
@@ -211,24 +211,6 @@ void setup()
     Serial.print(" Group: "); Serial.println(networkGroup);
     Serial.println(" ");
   }
-  Serial.println("POST.....wait 10s");
-  Serial.println("'+++' then [Enter] for RF config mode");
-  Serial.println("(Arduino IDE Serial Monitor: make sure 'Both NL & CR' is selected)");
-
-
-
-  if (digitalRead(DIP_switch2)==LOW) USA=true;                            // IF DIP switch 2 is switched on then activate USA mode
-
-
-  if (USA==true){                                                         // if USA mode is true
-    Vcal=Vcal_USA;                                                        // Assume USA AC/AC adatper is being used, set calibration accordingly
-    Vrms = Vrms_USA;                                                      /// USE 110V for USA apparent power
-  }
- 
-  for (int i=0; i<5; i++){   //delay 10s
-    delay(1000);
-    wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
-  }
 
   if (RF_STATUS==1){
     rf12_initialize(nodeID, RF_freq, networkGroup);                         // initialize RFM12B/rfm69CW
@@ -240,6 +222,24 @@ void setup()
     }
     rf12_sendWait(2);
     emontx.power1=0;
+  }
+
+  if (digitalRead(DIP_switch2)==LOW) USA=true;                            // IF DIP switch 2 is switched on then activate USA mode
+
+
+  if (USA==true){                                                         // if USA mode is true
+    Vcal=Vcal_USA;                                                        // Assume USA AC/AC adatper is being used, set calibration accordingly
+    Vrms = Vrms_USA;                                                      /// USE 110V for USA apparent power
+  }
+ 
+
+  Serial.println("POST.....wait 10s");
+  Serial.println("'+++' then [Enter] for RF config mode");
+  Serial.println("(Arduino IDE Serial Monitor: make sure 'Both NL & CR' is selected)");
+
+  for (int i=0; i<5; i++){   //delay 10s
+    delay(1000);
+    wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
   }
 
   if (analogRead(1) > 0) {CT1 = 1; CT_count++;} else CT1=0;              // check to see if CT is connected to CT1 input, if so enable that channel
