@@ -70,6 +70,8 @@ See: https://github.com/openenergymonitor/emonhub/blob/emon-pi/configuration.md
 
 */
 
+static void showString (PGM_P s);
+
 #define emonTxV3                                                                          // Tell emonLib this is the emonTx V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonTx V3 eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
 #define RF69_COMPAT 1                                                              // Set to 1 if using RFM69CW or 0 if using RFM12B
 #include <avr/wdt.h>
