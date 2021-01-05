@@ -31,7 +31,7 @@
 
 
 Change Log:
-V3.4   05/01/21 Slow down DS18B20 copnversion - required for new batch of RJ45 temp sensors 
+V3.4   05/01/21 Slow down DS18B20 conversion - required for new batch of RJ45 temp sensors 
 V3.3   05/12/19 Fix RFM factory test
 V3.2   27/08/19 Add watchdog reset
 V3.1   25/05/18 Add prompt for serial config
