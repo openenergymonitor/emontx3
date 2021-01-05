@@ -31,6 +31,8 @@ void setup(void)
 
   // Start up the library
   sensors.begin();
+  delay(1000);  //added to give the onewire stuff time to initialize.
+  sensors.requestTemperatures();
 
   // Grab a count of devices on the wire
   numberOfDevices = sensors.getDeviceCount();
@@ -70,6 +72,7 @@ void setup(void)
 		Serial.print(sensors.getResolution(tempDeviceAddress), DEC);
 		Serial.println();
     sensors.requestTemperatures();
+    delay(1000);  //some DS19B20 can take 750ms to perform temp conversion. Fix for 2021 batch of RJ45 temp sensors 
     Serial.print("Temperature: ");
     float tempC = sensors.getTempC(tempDeviceAddress);
     if ((tempC<80.0) && (tempC>-10.0)){
