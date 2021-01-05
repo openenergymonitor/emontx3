@@ -31,6 +31,8 @@
 
 
 Change Log:
+V3.4   05/01/21 Slow down DS18B20 copnversion - required for new batch of RJ45 temp sensors 
+V3.3   05/12/19 Fix RFM factory test
 V3.2   27/08/19 Add watchdog reset
 V3.1   25/05/18 Add prompt for serial config
 V3.0   16/01/18 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
