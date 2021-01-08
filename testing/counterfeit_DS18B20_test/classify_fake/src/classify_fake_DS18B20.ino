@@ -60,7 +60,10 @@
 // https://github.com/PaulStoffregen/OneWire
 #include "OneWire.h"
 
-#define pin_onewire 7
+//emonTx pins
+#define DS18B20_PWR 19
+#define pin_onewire 5
+#define pin_LED 6
 
 #define Comm Serial
 
@@ -258,6 +261,10 @@ void setup() {
   Comm.begin(115200);
   Comm.println();  
   
+  // Turn on emonTx DS18B120 power pin
+  pinMode(DS18B20_PWR, OUTPUT);
+  digitalWrite(DS18B20_PWR, HIGH); delay(100);
+
   ds = new OneWire(pin_onewire);
     
   Comm.println(F("classify_fake_DS18B20.ino version 2020/05/25"));
