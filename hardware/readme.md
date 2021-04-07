@@ -6,6 +6,8 @@ The emonTx V3.4 is the latest generation of the open-source hardware Arduino com
 
 ### V3.4.5 
 
+*Not yet released as of April 2021*
+
 - Remove MLF ATmega footprint to avoid solder bridges during reflow
 - Fix rear silkscreen version number
 - Improve via spacing 
