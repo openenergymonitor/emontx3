@@ -11,8 +11,9 @@ The emonTx V3.4 is the latest generation of the open-source hardware Arduino com
 - Remove MLF ATmega footprint to avoid solder bridges during reflow
 - Fix rear silkscreen version number
 - Improve via spacing 
-- Update R13 & R14 from 1% to 0.1%/0.5% tolerance
+- Update R13 & R14 from 1% to 0.5% tolerance
 - Switch to LDK320ADU33R LDO for higher 18V input voltage
+- Remove battery holder from BOM 
 
 ### V3.4.4 
 
