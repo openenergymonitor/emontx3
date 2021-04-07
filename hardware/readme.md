@@ -14,6 +14,7 @@ The emonTx V3.4 is the latest generation of the open-source hardware Arduino com
 - Update R13 & R14 from 1% to 0.5% tolerance
 - Switch to LDK320ADU33R LDO for higher 18V input voltage
 - Remove battery holder from BOM 
+- Revert to 4x CT sockets being black due to procurement issues for differnet colour sockes 
 
 ### V3.4.4 
 
