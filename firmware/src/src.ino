@@ -31,6 +31,9 @@
 
 
 Change Log:
+V3.4   05/01/21 Slow down DS18B20 conversion - required for new batch of RJ45 temp sensors 
+V3.3   05/12/19 Fix RFM factory test
+V3.2   27/08/19 Add watchdog reset
 V3.1   25/05/18 Add prompt for serial config
 V3.0   16/01/18 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
 v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
@@ -69,9 +72,12 @@ See: https://github.com/openenergymonitor/emonhub/blob/emon-pi/configuration.md
 
 */
 
+static void showString (PGM_P s);
+
 #define emonTxV3                                                                          // Tell emonLib this is the emonTx V3 - don't read Vcc assume Vcc = 3.3V as is always the case on emonTx V3 eliminates bandgap error and need for calibration http://harizanov.com/2013/09/thoughts-on-avr-adc-accuracy/
 #define RF69_COMPAT 1                                                              // Set to 1 if using RFM69CW or 0 if using RFM12B
-#include <JeeLib.h>                                                                      //https://github.com/jcw/jeelib - Tested with JeeLib 3/11/14
+#include <avr/wdt.h>
+#include <JeeLib.h>                                                                      //https://github.com/jcw/jeelib
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }                            // Attached JeeLib sleep function to Atmega328 watchdog -enables MCU to be put into sleep mode inbetween readings to reduce power consumption
 
 #include "EmonLib.h"                                                                    // Include EmonLib energy monitoring library https://github.com/openenergymonitor/EmonLib
@@ -82,7 +88,7 @@ EnergyMonitor ct1, ct2, ct3, ct4;
 #include <DS2438.h>
 
 
-const byte version = 31;         // firmware version divide by 10 to get version number e,g 16 = v1.6
+const byte version = 34;         // firmware version divide by 10 to get version number e,g 16 = v1.6
 boolean DEBUG = 1;                       // Print serial debug
 
 //----------------------------emonTx V3 Settings---------------------------------------------------------------------------------------------------------------
@@ -111,7 +117,7 @@ const int ACAC_DETECTION_LEVEL=   3000;
 const byte min_pulsewidth= 110;                                // minimum width of interrupt pulse (default pulse output meters = 100ms)
 const int TEMPERATURE_PRECISION=  11;                          //9 (93.8ms),10 (187.5ms) ,11 (375ms) or 12 (750ms) bits equal to resplution of 0.5C, 0.25C, 0.125C and 0.0625C
 const byte MaxOnewire=             6;
-#define ASYNC_DELAY 375                                          // DS18B20 conversion delay - 9bit requres 95ms, 10bit 187ms, 11bit 375ms and 12bit resolution takes 750ms
+#define ASYNC_DELAY 750                                          // DS18B20 conversion delay - 9bit requres 95ms, 10bit 187ms, 11bit 375ms and 12bit resolution takes 750ms
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -181,15 +187,14 @@ void setup()
 {
   pinMode(LEDpin, OUTPUT);
   pinMode(DS18B20_PWR, OUTPUT);
-
   pinMode(pulse_count_pin, INPUT_PULLUP);                     // Set emonTx V3.4 interrupt pulse counting pin as input (Dig 3 / INT1)
   emontx.pulseCount=0;                                        // Make sure pulse count starts at zero
-
   digitalWrite(LEDpin,HIGH);
-
   //DIP SWITCHES
   pinMode(DIP_switch1, INPUT_PULLUP);
   pinMode(DIP_switch2, INPUT_PULLUP);
+
+  wdt_enable(WDTO_8S);                                             // Enable reset watchdog
 
   Serial.begin(115200);
   Serial.print("emonTx V3.4 Discrete Sampling V"); Serial.println(version*0.1);
@@ -211,21 +216,6 @@ void setup()
     Serial.print(" Group: "); Serial.println(networkGroup);
     Serial.println(" ");
   }
-  Serial.println("POST.....wait 10s");
-  Serial.println("'+++' then [Enter] for RF config mode");
-  Serial.println("(Arduino IDE Serial Monitor: make sure 'Both NL & CR' is selected)");
-
-
-
-  if (digitalRead(DIP_switch2)==LOW) USA=true;                            // IF DIP switch 2 is switched on then activate USA mode
-
-
-  if (USA==true){                                                         // if USA mode is true
-    Vcal=Vcal_USA;                                                        // Assume USA AC/AC adatper is being used, set calibration accordingly
-    Vrms = Vrms_USA;                                                      /// USE 110V for USA apparent power
-  }
-
-  delay(10);
 
   if (RF_STATUS==1){
     rf12_initialize(nodeID, RF_freq, networkGroup);                         // initialize RFM12B/rfm69CW
@@ -239,6 +229,24 @@ void setup()
     emontx.power1=0;
   }
 
+  if (digitalRead(DIP_switch2)==LOW) USA=true;                            // IF DIP switch 2 is switched on then activate USA mode
+
+
+  if (USA==true){                                                         // if USA mode is true
+    Vcal=Vcal_USA;                                                        // Assume USA AC/AC adatper is being used, set calibration accordingly
+    Vrms = Vrms_USA;                                                      /// USE 110V for USA apparent power
+  }
+ 
+
+  Serial.println("POST.....wait 10s");
+  Serial.println("'+++' then [Enter] for RF config mode");
+  Serial.println("(Arduino IDE Serial Monitor: make sure 'Both NL & CR' is selected)");
+
+  for (int i=0; i<5; i++){   //delay 10s
+    delay(1000);
+    wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
+  }
+
   if (analogRead(1) > 0) {CT1 = 1; CT_count++;} else CT1=0;              // check to see if CT is connected to CT1 input, if so enable that channel
   if (analogRead(2) > 0) {CT2 = 1; CT_count++;} else CT2=0;              // check to see if CT is connected to CT2 input, if so enable that channel
   if (analogRead(3) > 0) {CT3 = 1; CT_count++;} else CT3=0;              // check to see if CT is connected to CT3 input, if so enable that channel
@@ -246,10 +254,11 @@ void setup()
 
   if ( CT_count == 0) CT1=1;                                             // If no CT's are connect ed CT1-4 then by default read from CT1
 
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
   // Quick check to see if there is a voltage waveform present on the AC-AC Voltage input
   // Check consists of calculating the RMS value from 100 samples of the voltage input.
   start = millis();
-  while (millis() < (start + 10000)){
+  while (millis() < (start + 7000)){
     // If serial input of keyword string '+++' is entered during 10s POST then enter config mode
     if (Serial.available()){
       if ( Serial.readString() == "+++\r\n"){
@@ -258,6 +267,7 @@ void setup()
         // char c[]="v"
         config(char('v'));
         while(1){
+          wdt_reset();
           if (Serial.available()){
             config(Serial.read());
           }
@@ -271,7 +281,7 @@ void setup()
   // Calculate if there is an AC-AC adapter on analog input 0
   double vrms = calc_rms(0,1780) * (Vcal * (3.3/1024) );
   if (vrms>90) ACAC = 1; else ACAC=0;
-
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
   if (ACAC)
   {
     for (int i=0; i<10; i++)                                              // indicate AC has been detected by flashing LED 10 times
@@ -303,7 +313,7 @@ void setup()
 
   delay(500);
   digitalWrite(DS18B20_PWR, LOW);
-
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
   if (numSensors==0) DS18B20_STATUS=0;
     else DS18B20_STATUS=1;
 
@@ -377,7 +387,7 @@ void setup()
 
   for(byte j=0;j<MaxOnewire;j++)
       emontx.temp[j] = 3000;                             // If no temp sensors connected default to status code 3000
-                                                         // will appear as 300 once multipled by 0.1 in emonhub
+  wdt_reset();             //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash                                                        // will appear as 300 once multipled by 0.1 in emonhub
 } //end SETUP
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -492,14 +502,26 @@ void loop()
     send_rf_data();                                                           // *SEND RF DATA* - see emontx_lib
   }
 
+  unsigned long sleeptime = 0;
+  unsigned long max_runtime = (TIME_BETWEEN_READINGS*1000) - 100;
   unsigned long runtime = millis() - start;
-  unsigned long sleeptime = (TIME_BETWEEN_READINGS*1000) - runtime - 100;
+
+  if (runtime < max_runtime) {
+    sleeptime = max_runtime - runtime;
+  }
 
   if (ACAC) {                                                               // If powered by AC-AC adaper (mains power) then delay instead of sleep
-    delay(sleeptime);
+    for (int i=0; i<5; i++){
+      delay(sleeptime/5);
+      wdt_reset();        //this line must be called faster than 8s, otherwise ATmega watchfog will kick in a resret the unit in event of a crash
+    }
   } else {                                                                  // if powered by battery then sleep rather than delay and disable LED to reduce energy consumption
+    word time_to_loose = 0;
+    if (sleeptime > 500) {
+      time_to_loose = sleeptime-500;
+    }
                                    // lose an additional 500ms here (measured timing)
-    Sleepy::loseSomeTime(sleeptime-500);                                    // sleep or delay in milliseconds
+    Sleepy::loseSomeTime(time_to_loose);                                    // sleep or delay in milliseconds
   }
 } // end loop
 //-------------------------------------------------------------------------------------------------------------------------------------------

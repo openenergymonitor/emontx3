@@ -105,7 +105,7 @@ static void save_config(){
   EEPROM.write(0, nodeID);
   EEPROM.write(1, RF_freq);
   EEPROM.write(2, networkGroup);
-  Serial.println("Done. New config saved to EEPROM");
+  Serial.println("Done. New config saved to EEPROM. Reset emonTx to take affect");
 }
 
 static byte bandToFreq (byte band) {

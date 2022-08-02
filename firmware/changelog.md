@@ -1,6 +1,9 @@
 ## emonTx V3.4 firmware change log:
 
-- V3.1   25/05/19 Prompt to set 'Both CR & NL' on serial monitor.
+- V3.4   05/01/21 Slow down DS18B20 conversion - required for new batch of RJ45 temp sensors 
+- V3.3   05/12/19 Fix RFM factory test
+- V3.2   27/08/19 Add watchdog reset
+- V3.1   25/05/18 Prompt to set 'Both CR & NL' on serial monitor.
 - V3.0   16/01/18 Return zero reading when CT is disconnected and always sample from all CT's when powered by AC-AC (negate CT's required plugged in before startup)
 - v2.9   30/03/17 Correct RMS voltage calc at startup when USA mode is enabled
 - v2.8   27/02/17 Correct USA voltage to 120V

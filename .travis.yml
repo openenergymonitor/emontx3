@@ -9,16 +9,5 @@ install:
 - pip install -U platformio
 script:
 - pio --version
-- if [ -z "$TRAVIS_TAG" ]; then platformio run -d firmware -e emontx; else echo $TRAVIS_TAG;
-  platformio run -d firmware -e emontx_deploy; fi
-deploy:
-  provider: releases
-  api_key:
-    secure: 10mUPFuio2ZZ1Kvd7q0VEQsC1LIAh5krfzAVlnYkw+dWvATWJ/BLzgtAn+eW+gfu/KO3b21eFoU63I5EfQGqH8sDgSPeyh4SLC+6CmoJTHU+Bv2VREmDp/7uc8fIfePoLxOPugEasWv/A19OAun5FFy+ep3FsRw0u4ywbXRQJTFOteU+WbFIPMj9PkyhnId7tOvUqfPyscJKBcmy3HZ0rkDBbqoQAtcp5yu3LiFzlOCbroiJXx8qipNB1pCBJS30Vop/JotIkIIvp6zC64u6XfscoUCQxDa4jihxSpEgpCc/gEx+6Xq9ydOeG9VMCSoULOEKg7sDLHxXNNk05mDuvV89xKOXk2zb3+DGIL/LF5JoK7jUSha/dK7I/PzoX6o21Vju48bsT2kVw9M5tZfSQ/2CuvswoZEM9iit+dxLv64pgHM+hnqlQxUaoO1rdvmSS7EVVVKA0WkTchfF2UFCJzodfWQHVYz9BdwR3/HMrTeFEjq0eA4dhYzmUwx20mdraxbNicMtIMNI9FY9fnAw2M5fBNTK7nxiK9RLAxDZuMa7eB15+uqFAEpm4avrDfoEbtGy09ye42aT4kUWxok92JyolKh0Y1C7enP1YOsNNLqvJYutHKVoODgP/xA5bfe/t14C2EYMsQwoEek3KUGC8XxWLqVU7IlgJbsjCsLK+do=
-  file: firmware/.pioenvs/emontx_deploy/firmware.hex
-  skip_cleanup: true
-  overwrite: true
-  on:
-    repo: openenergymonitor/emontx3
-    condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$
-    all_branches: true
+- platformio run -d firmware
+
