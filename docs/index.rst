@@ -8,4 +8,5 @@ emonTx3 User Guide
    Adding to an existing install <add.md>
    Add ESP8266 WiFi <esp8266.md>
    3-Phase <3phase.md>
+   Firmware <firmware.md>
    Technical <technical.md>

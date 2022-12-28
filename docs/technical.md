@@ -41,33 +41,37 @@ The image on the right shows the DIP switch configuration looking at the emonTx 
 **Serial Configuration**<br>
 It's possible to set the emonTx radio settings, sensor calibration and other properties over serial. See [Github PDF: Configuration of RF Module & on-line calibration](https://github.com/openenergymonitor/EmonTxV3CM/blob/master/Config.pdf) for full details. If a custom node ID is set, a corresponding node decoder needs to be in place in emonhub.conf to decode the EmonTx radio packet data. See [emonhub.conf configuration guide](https://github.com/openenergymonitor/emonhub/blob/emon-pi/configuration.md).
 
-**Powering via 5V USB**<br>
-If using the emonTx with an ESP8266 WiFi adapter a 5V USB power supply is required in addition to the AC Voltage adapter used for voltage sensing. It is advisable to remove jumper JP2 to the left of the battery compartment if both are present (looking at the emonTx with the CT sensor inputs at the top of the board).
+## Power Supply Options
 
-## Firmware
+There are four ways to power the emonTx3:
 
-The emonTx firmware is based on Arduino. Alternative or customised firmware sketches can be uploaded using Arduino IDE or PlatformIO and a USB to UART cable. The emonTx comes pre-loaded with the emonTxV3CM Continuous Sampling firmware as standard for single phase operation. If you bought the emonTx with the battery holder option it will come with the Discreet Sampling firmware.
+1. USB to UART cable - only recommended for short periods while programming, it is recommended to remove all other power sources
+2. 5V DC Mini-USB cable - remove jumper JP2 when powering via DC if AC adapter is present
+3. 3 x AA Batteries - remove jumper JP2 when powering via DC if AC adapter is present
+4. 9V AC-AC power adapter - with jumper JP2 closed (If jumper 2 is left open then the AC-AC adapter will be used for power sampling but not to power the emonTx3 - see AC adapter voltage sensing and power supply below).
 
-### [emonTxV3CM Continuous Sampling firmware](https://github.com/openenergymonitor/EmonTxV3CM)
+## AC adapter voltage sensing and power supply.
 
-New 2019: This firmware provides higher accuracy continuous monitoring and is now installed on emonTx units as standard. Continuous monitoring means that the power readings are representative of the full 10s period that they represent rather than a short snapshot.
+The emonTx3 is designed to use an AC-AC adapter to provide an AC voltage sample and also depending on the configuration power as well. If the emonTx3 detects the presence of an AC adapter at startup, it will automatically implement Real Power and Vrms measurements by sampling the AC voltage. Real Power is what you get billed for, and depending on the appliances connected to the circuit being monitored, can vary significantly from Apparent Power - see Learn for more info on AC power theory. **For best energy monitoring accuracy, we recommend powering the emonTx3 with an AC-AC adapter whenever possible**.
 
-### [emonTx Discreet Sampling firmware](https://github.com/openenergymonitor/emontx3/tree/master/firmware)
+Using the AC-AC adapter also enables the emonTx to monitor the direction of current flow. This is important for solar PV monitoring. If you notice a negative reading when you were expecting a positive one, reverse the orientation of the CT on the conductor.
 
-The original emonTx firmware, this performs power measurement in short discreet snapshots ~300ms long per CT channel at 50Hz per 10s period. This makes it possible for the emonTx to go to sleep inbetween readings enabling battery powered operation but is less accurate.<br>
+Powering via the AC adapter is only suitable for standard CT monitoring and up to 4x DS18B20 temperature sensors, transmitting data via RFM69 433Mhz radio. The power supply circuit is only able to deliver a limited amount of current without impacting the voltage sensor accuracy.
 
-**Indicator LED:** Illuminates solid for a 10 seconds on first power up, then flashes multiple times to indicate an AC-AC waveform has been detected (if powering via AC-AC adapter). Flashes once every 10s to indicate sampling and RF transmission interval.
+To avoid damage to the emonTx3 circuits, the current drawn from the AC circuit should never exceed 60mA. If more than 10 mA of current is required, it is recommended to remove jumper 2 (JP2) and power the emonTx via the 5V mini-USB connector. When JP2 is removed, the AC-AC adapter (if connected) will be used only to provide an AC voltage sample, i.e. it will not power the emonTx.
 
-### [3-phase firmware](https://github.com/openenergymonitor/emontx-3phase)
+**If using the emonTx with an ESP8266 WiFi adapter a seperate 5V USB power supply is required.**
 
-This firmware is intended for use on a 3-phase, 4-wire system and implements continuous monitoring as above. Because the voltage of only one phase can be measured, the firmware must assume that the voltages of the other two phases are the same. This will, in most cases, not be true, therefore the powers calculated and recorded will be inaccurate. However, this error should normally be limited to a few percent.
-
-- [Learn: Introduction to three-phase](https://learn.openenergymonitor.org/electricity-monitoring/ac-power-theory/3-phase-power)
-- [3-phase Firmware](https://github.com/openenergymonitor/emontx-3phase) 
-- [Full 3-phase Firmware User Guide](https://github.com/openenergymonitor/emontx-3phase/blob/master/emontx-3-phase-userguide.pdf)
-
-### Schematic and Board files
+## Schematic and Board files
 
 **emonTx Schematic and Board files:**<br> [https://github.com/openenergymonitor/emontx3/tree/master/hardware](https://github.com/openenergymonitor/emontx3/tree/master/hardware)
 
 **emonTx Wiki:**<br> [https://wiki.openenergymonitor.org/index.php/EmonTx_V3.4](https://wiki.openenergymonitor.org/index.php/EmonTx_V3.4)
+
+## Port Map
+
+![EmonTx_V3.4_portmap.png](img/EmonTx_V3.4_portmap.png)
+
+![](img/EmonTx_V3.4_brd_values_white.png)
+
+*Note: The FTDI connector Tx and Rx pins are reversed on the PCB legend and on the Schematic. Data is received by the emonTx on the Tx pin and transmitted by the emonTx on the Rx pin.*
