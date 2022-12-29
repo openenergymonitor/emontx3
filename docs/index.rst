@@ -4,6 +4,7 @@ emonTx3 User Guide
 .. toctree::
    :maxdepth: 2
    
+   Overview <overview.md>
    Install Guide <install.md>
    Adding to an existing install <add.md>
    3-Phase <3phase.md>
