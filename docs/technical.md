@@ -75,3 +75,29 @@ To avoid damage to the emonTx3 circuits, the current drawn from the AC circuit s
 ![](img/EmonTx_V3.4_brd_values_white.png)
 
 *Note: The FTDI connector Tx and Rx pins are reversed on the PCB legend and on the Schematic. Data is received by the emonTx on the Tx pin and transmitted by the emonTx on the Rx pin.*
+
+## Datasheet table
+
+| Function                   | Parameter                          | Min     | Recommended  Max / typical   | Absolute Max  if exceeded, damage may occur       | Notes                                                      |
+|----------------------------|------------------------------------|---------|------------------------------|---------------------------------------------------|------------------------------------------------------------|
+| CT 1-3                     | Monitoring Power @ 240V            |         | 23kW / 95.8A                 | 60kW / 250A                                       | Using 22R burden and  YHDC SCT-013-00                      |
+| CT 4                       | Monitoring Power @ 240V            |         | 4.5kW / 19.2A                | 4.6kW max measure – 19.7kW / 82A Max dissipation  | Using 120R burden and  YHDC SCT-013-00                     |
+| DC half-wave power supply  | Current output                     |         | 20mA                         | 60mA                                              | Current draw above 20mA AC sample signal will be affected  |
+| 3.3V Rail current output   | When powered via 5V USB connector  |         | 150mA                        | 168mA                                             | Limitation SOT22 MCP1700 Ta=40C Vi=5.25V                   |
+| Operating Temperature      | Temperature                        | -40C    | +40C                         | +85C                                              |                                                            |
+| Storage Temperature        | Temperature                        | -50C    |                              | +150C                                             |                                                            |
+| 5V Input Voltage           | USB/FTDI/5V Aux                    | +3.4V   | +6V                          | +6.5V (see note 1)                                | See note 1                                                 |
+| 3.3V Supply Voltage        | on 3.3V supply rail                | 2.6V *  | 3.3V                         | 3.9V RFM69CW                                      | *ADC readings will be incorrect if Vcc is not 3.3V         |
+
+*A higher voltage (up to 17.6V) can be used to power the emonTx if power is connected into the MCP1754 through the AC-DC enable jumper pin.*
+
+## Enclosure
+
+The emonTx V3 PCB is 100mm x 80mm and enclosed in an EBS80 enclosure sourced from Lincoln Binns, see [data sheet](https://www.lincolnbinns.com/en/aluminium-electronic-enclosure-e-case-b-data).
+
+**Community contributed**
+
+- [emonTx DIN-RAIL mount #1 fixing on Thingiverse](http://www.thingiverse.com/thing:1355749)
+- [emonTx DIN-RAIL mount #2 fixing on Thingiverse](https://www.thingiverse.com/thing:208177)
+- [emonTx > EmonESP > LCD](https://www.thingiverse.com/thing:2043784)
+- [emonTx 3D printed case design](https://www.thingiverse.com/nduarte/designs)
