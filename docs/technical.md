@@ -1,5 +1,41 @@
 # Technical
 
+## CT Sensor Burden Resistor Calculations
+
+The emonTx3 was primarily designed to use the YHDC SCT-013-000 100A, 2000 turns, current output CT sensors. Using this sensor:
+
+- **CT channels 1-3** have a 22R burden resistor, and can measure up to 97A RMS (23.3kW @ 240V) using a YHDC SCT-013-00 CT which has 2000 turns.
+
+- **CT channel 4** has a 120R burden and can measure up to 19.16 A RMS (4.6kW max @ 240 V) 
+
+These burden resistor values were choosen based on the following calculation:
+
+    Peak current primary = RMS current x sqrt(2)
+
+    Peak current secondary = Peak current primary / turns
+
+    Burden resistance = (Analog reference voltage x 0.5) / Peak current secondary
+
+The analog reference voltage on the emonTx3 is 3.3V.
+
+For a capability to measure 100A RMS primary current on CT channels 1-3, the calculated burden resistance is 23.3 Ohms. The closest resistor values are 22 Ohms and 24 Ohms. We selected 22 Ohms giving a measurement range of 0-97A RMS.
+
+For a capability to measure 4kW or 16.7A RMS primary current on CT channels 4, the calculated burden resistance is 139.9 Ohms. The closest resistor values are 120 Ohms and 150 Ohms. We selected 120 Ohms giving a measurement range of 0-19.2A RMS or 4.6 kW @ 240V.
+
+It is possible to change the standard burden resistors on an emonTx3 in order to change the measurement range when using the standard SCT-013-000 CT sensor. E.g to make all CT channels higher sensitivity 4.6kW channels. The burden resistor can also be changed to suit alternative CT sensors, in order to match the CT sensor output and desired measurement range with the emonTx3 ADC input voltage range.
+
+The higher the burden resistance, the smaller the measurement range, the higher the low end accuracy will be. For higher accuracy it's also worth choosing resistors with precise tolerance e.g ±0.1% or ±1%.
+
+The following burden resistor value calculator is a useful tool to work out the best value: [https://tyler.anairo.com/projects/open-energy-monitor-calculator](https://tyler.anairo.com/projects/open-energy-monitor-calculator)
+
+If the power level goes above the CT max rating, the voltage will go above 3.3V and the ATmega328’s ADC will be saturated. A 1K series resistor is used to limit input current to the ATmega. The ATmega 328’s internal clamping diodes will safely limit the voltage, preventing damage. [http://openenergymonitor.org/emon/node/171 ](http://openenergymonitor.org/emon/node/171 )
+
+**Alternative CT sensors**
+
+Using an SCT-016-000 with 6060 turns, at 200A max primary the recommended burden is 33R, which gives a max current rating of 214A
+
+Using an SCT-006-000 with 533 turns, at 20A max primary the recommended burden is 30R, which gives a max current rating of 20.7A 
+
 ## Power Supply Options
 
 There are four ways to power the emonTx3:
