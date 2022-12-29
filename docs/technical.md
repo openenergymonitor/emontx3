@@ -25,22 +25,6 @@ The emonTx is an low power RF remote sensor node. Data is transmitted to an emon
 **Battery vs AC adapter:**
 An emonTx can be powered by 3 x AA batteries; however, if possible, it is recommended to power the unit with an AC-AC adapter to provide an AC voltage reference for more accurate real power calculation and continuous sampling support.
 
-## Configuration
-
-**Configure RF Node ID and Voltage calibration**<br>
-Multiple emonTx unit's can operate on a single network posting to a single emonBase web-connected base station, each emonTx on the same network group must have an unique node ID. The nodeID can be selected at time of purchase or set using the on-board DIP switch to toggle. If more than two emonTx's are required on the same network then further nodeID values can be set via RF node ID serial config.
-
-
-```{image} img/emontx_dipswitch.jpg
-:width: 400px
-:align: right
-```
-
-The image on the right shows the DIP switch configuration looking at the emonTx with the CT sensor inputs at the top of the board. Move the top switch D9 to the left to select USA ACAC Voltage calibration. **Move the bottom switch D8 to the left to select RF node ID 16 rather than 15.**
-
-**Serial Configuration**<br>
-It's possible to set the emonTx radio settings, sensor calibration and other properties over serial. See [Github PDF: Configuration of RF Module & on-line calibration](https://github.com/openenergymonitor/EmonTxV3CM/blob/master/Config.pdf) for full details. If a custom node ID is set, a corresponding node decoder needs to be in place in emonhub.conf to decode the EmonTx radio packet data. See [emonhub.conf configuration guide](https://github.com/openenergymonitor/emonhub/blob/emon-pi/configuration.md).
-
 ## Power Supply Options
 
 There are four ways to power the emonTx3:
@@ -63,6 +47,8 @@ To avoid damage to the emonTx3 circuits, the current drawn from the AC circuit s
 **If using the emonTx with an ESP8266 WiFi adapter a seperate 5V USB power supply is required.**
 
 ## Schematic and Board files
+
+Proudly open source, the hardware designs are released under the Creative Commons Attribution-ShareAlike 3.0 Unported License: 
 
 **emonTx Schematic and Board files:**<br> [https://github.com/openenergymonitor/emontx3/tree/master/hardware](https://github.com/openenergymonitor/emontx3/tree/master/hardware)
 
