@@ -59,16 +59,19 @@ For advanced emonTx configuration and alternative firmware options see:<br> [emo
 
 ## Temperature sensing
 
+A DS18B20 digital temperature sensor can easily be connected to the emonTx V3 by connecting the sensor to the emonTx V3 screw terminal block or RJ45 connector.
+
+The continuous Monitoring firmware (default) supports 3x temperature sensors. The Discrete Sampling firmware (used for battery operation) supports up to 6x temperature sensors.
+
+A DS18B20 sensor can be connected directly to the RJ45 socket, or an RJ45 to terminal block breakout can be used to connect multiple sensors:
+
 ![EmonTx_RJ45_DS18B20.jpg](img/EmonTx_RJ45_DS18B20.jpg)
+
+*Note: The RJ45 socket does not support power supply switching via Dig19 (ADC5).*
 
 - [Shop: Encapsulated DS18B20 temperature sensor](http://shop.openenergymonitor.com/encapsulated-ds18b20-temperature-sensor/)
 - [Shop: emonPi / emonTx RJ45 to Terminal Block Breakout for DS18B20](https://shop.openenergymonitor.com/rj45-to-terminal-block-breakout-for-ds18b20/)
-
-**EmonTx Power Supply**<br>
-When using multiple temperature sensors and or an optical pulse sensor with the emonTx it is recommended to power the emonTx via a 5V USB rather than AC-AC adapter due to increased power requirement. An AC-AC adapter can still be used to provide an AC voltage reference. 
-
-**EmonTx Low power battery mode**<br>
-In order to save power when running on batteries, the emonTx V3 supports switching off of the DS18B20 in-between readings and performing the temperature conversion while the ATmega328 is sleeping. To do this, power (3.3 V) is supplied to the DS18B20's power pin from Dig19 (ADC5), this digital pin is switched off between readings. (This facility is available only if the temperature sensors are connected via the terminal block.) The data connection from the DS18B20 is connected to Dig5, this I/O pin has a 4K7 pull-up resistor on-board as required by the DS18B20. 
+- Additional RJ45 breakouts are available from [Sheep Walk Electronics](http://www.sheepwalkelectronics.co.uk/index.php?cPath=23)
 
 **RJ45 Pinout**<br>
 The RJ45 implements a standard pinout used by other manufacturers of DS18B20 temperate sensing hardware such as Sheepwalk Electronics.
@@ -81,6 +84,12 @@ The RJ45 implements a standard pinout used by other manufacturers of DS18B20 tem
 To connect an external DS18B20 to the emonTx V3 screw terminal block, connect the **black** wire to GND, **red** to 'ADC5 / Dig19 / DS18B20 PWR' and **white** to 'Dig 5 / DS18B20 Data / PWM':
 
 ![emontx_ds18b20_terminal_block.jpg](img/emontx_ds18b20_terminal_block.jpg)
+
+**EmonTx Power Supply**<br>
+When using multiple temperature sensors and or an optical pulse sensor with the emonTx it is recommended to power the emonTx via a 5V USB rather than AC-AC adapter due to increased power requirement. An AC-AC adapter can still be used to provide an AC voltage reference. 
+
+**EmonTx Low power battery mode**<br>
+In order to save power when running on batteries, the emonTx V3 supports switching off of the DS18B20 in-between readings and performing the temperature conversion while the ATmega328 is sleeping. To do this, power (3.3 V) is supplied to the DS18B20's power pin from Dig19 (ADC5), this digital pin is switched off between readings. (This facility is available only if the temperature sensors are connected via the terminal block.) The data connection from the DS18B20 is connected to Dig5, this I/O pin has a 4K7 pull-up resistor on-board as required by the DS18B20. 
 
 **Further reading**<br>
 If you are using temperature sensors with heating systems such as heat pumps the following blog post by John Cantor provides a number of useful mounting suggestions: [John Cantor's Blog: Temperature sensors for monitoring heat pumps](https://heatpumps.co.uk/2015/06/08/temperature-sensing-with-openenergymonitor)
@@ -104,3 +113,5 @@ In the face of long leads and/or moderate interference, it is advisable to “st
 Alternatively a volt-free / switch output (SO) pulse output device can be connected across 3.3V (or 5V) and IRQ1 Dig3. A pull-down resistor of resistance low enough to overcome the internal pull-up resistor needs to be added in this case, or a higher-value resistor with the firmware modified to disable the internal pull-up.
 
 We recommend powering the emonTx v3 from either a 5V USB or AC-AC adaptor when used for pulse counting operation. Due to the additional power requirements of the optical pulse sensor, battery life will be reduced significantly compared to an emonTx powered by 3 AA batteries for CT operation only. 
+
+**Emoncms input processing**<br>Pulses and the most recent pulse count are transmitted via RF, as the final variable in the JeeLib packet structure. The emonCMS wh_accumulator input process can be used to log the pulse count. The wh_accumulator input process detects when the pulse count gets reset to zero (after the emonTx is reset) and continues to accumulate, ignoring the reset. A scaler input process can be used to convert number of pulses to kWh. For example: my utility meter outputs 800 pulses per kWh, so each pulse is 0.8Wh. I can multiply the number of pulses by 0.8 to get the number of Wh, or by 0.0008 for the number of kWh accumulated. 
