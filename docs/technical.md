@@ -31,9 +31,6 @@ Proudly open source, the hardware designs are released under the Creative Common
 
 **emonTx Schematic and Board files:**<br> [https://github.com/openenergymonitor/emontx3/tree/master/hardware](https://github.com/openenergymonitor/emontx3/tree/master/hardware)
 
-**emonTx Wiki:**<br> [https://wiki.openenergymonitor.org/index.php/EmonTx_V3.4](https://wiki.openenergymonitor.org/index.php/EmonTx_V3.4)
-
-
 ## CT Sensor Burden Resistor Calculations
 
 The emonTx3 was primarily designed to use the YHDC SCT-013-000 100A, 2000 turns, current output CT sensors. Using this sensor:

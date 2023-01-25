@@ -19,7 +19,7 @@ Data is transmitted to the emonPi or emonBase via the low power 433MHz radio as 
 For a detailed and technical explanation of the 3-phase firmware, see the [emonTx three-phase technical user guide](https://github.com/openenergymonitor/emontx-3phase/blob/master/emontx-3-phase-userguide.pdf) and the [3-phase emonTx firmware repository](https://github.com/openenergymonitor/emontx-3phase). 
 
 ```{note}
-The emonTx3 3-phase firmware default nodeid is node 11. If installing multiple units, moving the bottom DIP switch (D8) to the left will change the node ID to 12. This can alternatively be done via serial configuration, see [Adding to an existing install](add.md#adding-more-than-one-emontx-to-an-emonpi-or-emonbase-system)
+The emonTx3 3-phase firmware default nodeid is node 11. If installing multiple units, moving the bottom DIP switch (D8) to the left will change the node ID to 12. This can alternatively be done via serial configuration, see [Adding to an existing install](add.md)
 ```
 
 ## 2. Emoncms Input processing

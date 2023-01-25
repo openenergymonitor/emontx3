@@ -36,8 +36,8 @@ The emonTx transmits real power, cumulative watt-hours, mains voltage and temper
 **emonTx**
 
 1. Mount emonTx in desired location, use wall mounts if required, attach antennae.
-2. Plug CT sensors into the emonTx first and then clip around either the **Line** or **Neutral** cable of the AC circuits that you wish to measure. If the power reading is negative, reverse the CT sensor orientation. [Please read the CT installation guide before installing](electricity-monitoring/ct-sensors/installation.md).
-3. Attach temperature sensors or/and pulse sensor as required. See guides: [+ Add Temperature Nodes](/setup/emonth) and [+ Add Optical Pulse Sensor](/setup/optical-pulse-sensor).
+2. Plug CT sensors into the emonTx first and then clip around either the **Line** or **Neutral** cable of the AC circuits that you wish to measure. If the power reading is negative, reverse the CT sensor orientation. [Please read the CT installation guide before installing](../electricity-monitoring/ct-sensors/installation.md).
+3. Attach temperature sensors or/and pulse sensor as required. See guides: [+ Add Temperature Nodes](../emonth2/install.md) and [+ Add Optical Pulse Sensor](../emontx3/install.md).
     
 3. Plug in and connect the AC-AC adapter to provide voltage measurement and power. This may require installation of a new outlet or extending an existing one.
 
@@ -50,11 +50,11 @@ That's the hardware setup done! The next step is to configure the network connec
 
 To setup the software continue to guides: 
 
-- [1. Connect](/setup/connect)
-- [2. Log Locally](/setup/local)
-- [3. Log Remotely](/setup/remote)
+- [1. Connect](../emonpi/connect.md)
+- [2. Log Locally](../emoncms/intro-rpi.md)
+- [3. Log Remotely](../emoncms/intro-remote.md)
 
-For advanced emonTx configuration and alternative firmware options see:<br> [emonTx technical guide](/technical/emontx).
+For advanced emonTx configuration and alternative firmware options see:<br> [emonTx technical guide](../emontx3/technical.md).
 
 
 ## Temperature sensing
