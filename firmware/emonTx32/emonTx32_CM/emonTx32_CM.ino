@@ -228,7 +228,7 @@ void setup()
     {
       emontx.P1=i;
       #if RadioFormat == RFM69_LOW_POWER_LABS
-        radio.send(5, (const void*)(&emontx), sizeof(emontx));
+        // radio.send(5, (const void*)(&emontx), sizeof(emontx));
       #else
         PayloadTX tmp = emontx;
         if (EEProm.rf_on == 2) {
