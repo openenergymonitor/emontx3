@@ -7,8 +7,6 @@ It is intended for use on a **3-phase, 4-wire system**. It utilises advanced fea
 
 Pulse counting and temperature monitoring using a single DS18B20 sensor is supported.
 
-*By [Robert Wall](https://community.openenergymonitor.org/u/robert.wall/summary)*
-
 ## Key Feautures
 
 - Continuous monitoring of one voltage channel and up 4 current channels.
