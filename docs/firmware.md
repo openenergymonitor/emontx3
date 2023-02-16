@@ -8,7 +8,7 @@ The emonTx3 firmware is based on Arduino. Alternative or customised firmware ske
 
 This firmware provides higher accuracy continuous monitoring. Continuous monitoring means that the power readings are representative of the full 10s period that they represent rather than a short snapshot. This firmware was pre-loaded as standard since 2019, unless battery operation was selected.
 
-Support for three different radio formats is available: JeeLib Classic, JeeLib Native and LowPowerLabs.
+**New:** Support for three different radio formats is available: JeeLib Classic, JeeLib Native and **LowPowerLabs**.
 
 ### [emonTx34_DS_jeelib_classic](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx34_DS_jeelib_classic): discrete sampling firmware
 
@@ -21,8 +21,9 @@ The original emonTx firmware, this performs power measurement in short discreet 
 This firmware is intended for use on a 3-phase, 4-wire system and implements continuous monitoring as above. Because the voltage of only one phase can be measured, the firmware must assume that the voltages of the other two phases are the same. This will, in most cases, not be true, therefore the powers calculated and recorded will be inaccurate. However, this error should normally be limited to a few percent.
 
 - [Learn: Introduction to three-phase](https://learn.openenergymonitor.org/electricity-monitoring/ac-power-theory/3-phase-power)
-- [3-phase Firmware](https://github.com/openenergymonitor/emontx-3phase) 
-- [Full 3-phase Firmware User Guide](https://github.com/openenergymonitor/emontx-3phase/blob/master/emontx-3-phase-userguide.pdf)
+- [Full 3-phase Firmware User Guide](https://github.com/openenergymonitor/emontx3/blob/master/firmware/emonTx34/emonTx_3Phase_PLL/emonTx_3Phase_PLL_User_Doc.pdf)
+
+**New:** Support for three different radio formats is available: JeeLib Classic, JeeLib Native and **LowPowerLabs**.
 
 ## Updating firmware using an emonPi/emonBase
 
