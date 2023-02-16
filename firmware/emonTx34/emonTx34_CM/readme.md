@@ -13,7 +13,11 @@ Continuous monitoring firmware was pre-loaded on emonTx3 units sold from the Ope
 - Support for pulse counting.
 - Resulting readings transmitted via RFM radio or printed to serial.
 - Serial configuration of RFM radio and calibration values.
-- **New:** Radio format support with #define selection for: JeeLib Classic, JeeLib Native & LowPowerLabs
+- **New:** Radio format support with #define selection for: JeeLib Classic, JeeLib Native & **LowPowerLabs**
+
+## Serial configuration
+
+See [https://docs.openenergymonitor.org/emontx3/configuration.html#serial-configuration](https://docs.openenergymonitor.org/emontx3/configuration.html#serial-configuration)
 
 ## Pre-compiled HEX files:
 
