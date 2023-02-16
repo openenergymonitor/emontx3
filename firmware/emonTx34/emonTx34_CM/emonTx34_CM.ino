@@ -25,13 +25,13 @@ v2.1: Factory test transmission moved to Grp 1 to avoid interference with record
 v2.1 (duplicate): printTemperatureSensorAddresses() was inside list_calibration() - reason not recorded [G.Hudson 23/12/21]
 v2.3: The two v2.1 versions merged [RW - 9/3/22]
 
-v3.0.0: Common single-phase continuous sampling firmware
+v2.4.0: Common single-phase continuous sampling firmware
         Radio format options:
         1. JeeLib Classic
         2. JeeLib Native
         3. LowPowerLabs
 */
-const char *firmware_version = {"3.0.0\n\r"};
+const char *firmware_version = {"2.4.0\n\r"};
 /*
 
 emonhub.conf node decoder (nodeid is 15 when switch is off, 16 when switch is on)
@@ -181,7 +181,7 @@ void setup()
   if (digitalRead(DIP_switch1)==ON) EEProm.nodeID++;                         // IF DIP switch 1 is switched on (LOW) then add 1 from nodeID
 
   #ifdef DEBUG
-    Serial.print(F("emonTx V3 CM Continuous Monitoring V")); Serial.write(firmware_version);
+    Serial.print(F("emonTx V3.4 Continuous Monitoring V")); Serial.write(firmware_version);
     Serial.println(F("OpenEnergyMonitor.org"));
   #else
     Serial.println(F("describe:EmonTX3CM"));
@@ -273,6 +273,10 @@ void setup()
   #endif
 
 #ifdef EEWL_DEBUG
+  Serial.print("End of mem=");Serial.print(E2END);
+  Serial.print("  Avail mem=");Serial.print((E2END>>2) * 3);
+  Serial.print("  Start addr=");Serial.print(E2END - (((E2END>>2) * 3) / (sizeof(mem)+1))*(sizeof(mem)+1));
+  Serial.print("  Num blocks=");Serial.println(((E2END>>2) * 3) / 21);
   EVmem.dump_buffer();
 #endif
 

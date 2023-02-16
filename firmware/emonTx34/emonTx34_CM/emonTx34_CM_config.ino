@@ -474,6 +474,9 @@ void getSettings(void)
       }
     }
   }
+  #ifdef _AVR_WDT_H_
+    wdt_reset();
+  #endif
 }
 
 
