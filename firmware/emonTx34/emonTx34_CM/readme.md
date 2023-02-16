@@ -21,10 +21,10 @@ See [https://docs.openenergymonitor.org/emontx3/configuration.html#serial-config
 
 ## Pre-compiled HEX files:
 
-JeeLib Classic radio format:
+JeeLib Classic radio format:<br>
 https://github.com/openenergymonitor/emontx3/releases/download/tx3-16-02-23/emonTx34_CM_jeelib_classic_2_4.hex
 
-**New:** LowPowerLabs radio format:
+**New:** LowPowerLabs radio format:<br>
 https://github.com/openenergymonitor/emontx3/releases/download/tx3-16-02-23/emonTx34_CM_LPL_2_4.hex
 
 ## Compile and upload using PlatformIO
