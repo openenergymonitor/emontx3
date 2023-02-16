@@ -11,12 +11,9 @@
                       85  deg   although in range, might indicate a wiring fault.
 
     Three-phase energy monitor
-
-    
-    V 2.0.0  11/07/21  Derived from the "Classic JeeLib" version. Uses either Jeelib "Classic" or "RFM69 Native" format and OEM "rfm69nTxLib.h" library instead of rfm.ino file.
 */
 
-#define VERSION "emonTx_3Phase_PLL - Firmware version 2.0.0 "                      
+#define VERSION "emonTx_3Phase_PLL - Firmware version 2.1.0 "                      
     
 /*
     History (single Phase energy diverter):
@@ -43,7 +40,8 @@
     V 1.6    24/2/19  Unwanted space in emonESP output removed. No change to documentation.
     V 1.7            Versions 1.5 & 1.6 showed "V1.4" in serial print. Order of lines 457 & 458 was reversed. Added preprocessor substitution VERSION to replace a variable. 
 
-   
+    V 2.0.0  11/07/21  Derived from the "Classic JeeLib" version. Uses either Jeelib "Classic" or "RFM69 Native" format and OEM "rfm69nTxLib.h" library instead of rfm.ino file.
+    V 2.1.0  16/02/23  Support for LowPowerLabs radio format
 
 
     emonhub.conf node decoder settings for this sketch:
@@ -70,7 +68,11 @@
     This sketch requires the OEM RFM69CW transmit-only library "rfm69nTxLib.h" and uses the "JeeLib RFM69 Native" message format.
 */
 
-#define RF_CLASSIC                                // Sets the RF data format: either RF_CLASSIC or RF_NATIVE. Use "classic" for emonPi, "native" for emonPiCM
+#define RFM69_JEELIB_CLASSIC 1
+#define RFM69_JEELIB_NATIVE 2
+#define RFM69_LOW_POWER_LABS 3
+
+#define RadioFormat RFM69_LOW_POWER_LABS
 
 #define EMONTX_V34                               // Sets the I/O pin allocation. 
                                                  // use EMONTX_V2 or EMONTX_V32 or EMONTX_V34 or EMONTX_SHIELD as appropriate
@@ -105,12 +107,13 @@
                                                  // The sketch will hang if the wrong radio module is specified, or if one is specified and not fitted.
                                                  // For all serial output, the maximum is 9600 baud. The emonESP module must be set to suit.
                                             
-#ifdef RF_NATIVE
- #include <rfm69nTxLib.h>                        // OEM RFM69CW transmit-only library using "JeeLib RFM69 Native" message format
-#else
- #include <rfmTxLib.h>                           // OEM RFM69CW transmit-only library using "JeeLib RFM69 Native" message format
+#if RadioFormat == RFM69_LOW_POWER_LABS
+  #include <RFM69.h>                             // RFM69 LowPowerLabs radio library
+#elif RadioFormat == RFM69_JEELIB_CLASSIC
+  #include <rfmTxLib.h>                          // RFM69 transmit-only library using "JeeLib RFM69 Native" message format
+#elif RadioFormat == RFM69_JEELIB_NATIVE
+  #include <rfm69nTxLib.h>                       // RFM69 transmit-only library using "JeeLib RFM69 Native" message format
 #endif
-
   
 const int busyThreshold = -97;                   // Signal level below which the radio channel is clear to transmit
 const byte busyTimeout = 15;                     // Time in ms to wait for the channel to become clear, before transmitting anyway
@@ -320,6 +323,10 @@ const byte PulseMinPeriod = PULSEMINPERIOD;      // minimum period between pulse
 
 #include <OneWire.h>
 
+#if RadioFormat == RFM69_LOW_POWER_LABS
+  RFM69 radio;
+#endif
+
 // create a data packet for the RFM
 struct { int power1, power2, power3, power4, Vrms, temp[MAXONEWIRE] = {UNUSED_TEMPERATURE,UNUSED_TEMPERATURE,
                   UNUSED_TEMPERATURE,UNUSED_TEMPERATURE,UNUSED_TEMPERATURE,UNUSED_TEMPERATURE};
@@ -416,7 +423,13 @@ void setup()
   #ifdef RFM69CW
     delay(200); // wait for RFM69CW POR
     if (EEProm.rf_on)
-      rfm_init();                           // initialize RFM
+    #if RadioFormat == RFM69_LOW_POWER_LABS
+      radio.initialize(RF69_433MHZ,EEProm.nodeID,EEProm.networkGroup);  
+      radio.encrypt("89txbe4p8aik5kt3");                                                      // initialize RFM
+      radio.setPowerLevel(EEProm.rfPower);
+    #else
+      rfm_init();                                                        // initialize RFM
+    #endif
   #endif
   
   #ifdef USEPULSECOUNT
@@ -926,7 +939,12 @@ void sendResults()
 {
   #ifdef RFM69CW                                 // *SEND RF DATA*
     if (EEProm.rf_on)
-      rfm_send((byte *)&emontx, sizeof(emontx), EEProm.networkGroup, EEProm.nodeID, EEProm.RF_freq, EEProm.rfPower, busyThreshold, busyTimeout);
+      #if RadioFormat == RFM69_LOW_POWER_LABS
+        radio.sendWithRetry(5, (const void*)(&emontx), sizeof(emontx));
+        radio.sleep();
+      #else   
+        rfm_send((byte *)&emontx, sizeof(emontx), EEProm.networkGroup, EEProm.nodeID, EEProm.RF_freq, EEProm.rfPower, busyThreshold, busyTimeout);
+      #endif
   #else
     #ifdef TXPIN
       digitalWrite(TXPIN,HIGH);
