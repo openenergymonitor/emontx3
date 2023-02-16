@@ -4,19 +4,19 @@ The emonTx3 firmware is based on Arduino. Alternative or customised firmware ske
 
 ## Available Firmware
 
-### [emonTx34_CM single](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx34_CM) - phase continuous sampling firmware
+### [emonTx34_CM](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx34_CM): continuous sampling firmware
 
 This firmware provides higher accuracy continuous monitoring. Continuous monitoring means that the power readings are representative of the full 10s period that they represent rather than a short snapshot. This firmware was pre-loaded as standard since 2019, unless battery operation was selected.
 
 Support for three different radio formats is available: JeeLib Classic, JeeLib Native and LowPowerLabs.
 
-### [emonTx34_DS_jeelib_classic](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx34_DS_jeelib_classic) - single phase discrete sampling firmware
+### [emonTx34_DS_jeelib_classic](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx34_DS_jeelib_classic): discrete sampling firmware
 
 The original emonTx firmware, this performs power measurement in short discreet snapshots ~300ms long per CT channel at 50Hz per 10s period. This makes it possible for the emonTx to go to sleep inbetween readings enabling battery powered operation but is less accurate.
 
 **Indicator LED:** Illuminates solid for a 10 seconds on first power up, then flashes multiple times to indicate an AC-AC waveform has been detected (if powering via AC-AC adapter). Flashes once every 10s to indicate sampling and RF transmission interval.
 
-### [emonTx_3Phase_PLL](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx_3Phase_PLL) - approximate 3-phase continuous sampling firmware
+### [emonTx_3Phase_PLL](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx_3Phase_PLL): 3-phase continuous sampling firmware
 
 This firmware is intended for use on a 3-phase, 4-wire system and implements continuous monitoring as above. Because the voltage of only one phase can be measured, the firmware must assume that the voltages of the other two phases are the same. This will, in most cases, not be true, therefore the powers calculated and recorded will be inaccurate. However, this error should normally be limited to a few percent.
 
