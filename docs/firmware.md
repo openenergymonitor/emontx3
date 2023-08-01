@@ -12,7 +12,7 @@ This firmware provides higher accuracy continuous monitoring. Continuous monitor
 
 ### [emonTx34_DS_jeelib_classic](https://github.com/openenergymonitor/emontx3/tree/master/firmware/emonTx34/emonTx34_DS_jeelib_classic): discrete sampling firmware
 
-The original emonTx firmware, this performs power measurement in short discreet snapshots ~300ms long per CT channel at 50Hz per 10s period. This makes it possible for the emonTx to go to sleep inbetween readings enabling battery powered operation but is less accurate.
+The original emonTx firmware, this performs power measurement in short discrete snapshots ~300ms long per CT channel at 50Hz per 10s period. This makes it possible for the emonTx to go to sleep inbetween readings enabling battery powered operation but is less accurate.
 
 **Indicator LED:** Illuminates solid for a 10 seconds on first power up, then flashes multiple times to indicate an AC-AC waveform has been detected (if powering via AC-AC adapter). Flashes once every 10s to indicate sampling and RF transmission interval.
 
