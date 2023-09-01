@@ -463,7 +463,7 @@ void getSettings(void)
     }*/
     
     char c = Serial.read();
-    if (c=='\n') {
+    if (c=='\n' || c=='\r') {
       handle_conf(input,idx);
       memset(input, 0, 64);
       idx = 0;
