@@ -52,7 +52,7 @@ copy the following into emonhub.conf:
 #define RFM69_JEELIB_NATIVE 2
 #define RFM69_LOW_POWER_LABS 3
 
-#define RadioFormat RFM69_JEELIB_CLASSIC
+#define RadioFormat RFM69_LOW_POWER_LABS
 
 // Comment/Uncomment as applicable
 #define DEBUG                                              // Debug level print out
