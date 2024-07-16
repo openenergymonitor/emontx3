@@ -414,7 +414,7 @@ void handle_conf(char *input, byte len) {
       if (len==1) {
         Serial.println(F("Energy values set to zero"));
         zeroEValues(); 
-        for (byte n=0; n<6; n++)
+        for (byte n=0; n<5; n++)
           EmonLibCM_setWattHour(n, 0);
         EmonLibCM_setPulseCount(0);
       }
@@ -463,7 +463,7 @@ void getSettings(void)
     }*/
     
     char c = Serial.read();
-    if (c=='\n') {
+    if (c=='\n' || c=='\r') {
       handle_conf(input,idx);
       memset(input, 0, 64);
       idx = 0;
